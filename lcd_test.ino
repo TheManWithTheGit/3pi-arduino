@@ -13,6 +13,7 @@ void setup() {
 }
 
 void loop() {
+  clear();
   left_value = analogRead(left_ldr);
   right_value = analogRead(right_ldr);
   lcd.gotoXY(0, 0);
