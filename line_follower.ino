@@ -47,13 +47,13 @@ void LINE_func(void) {
 
   // Compute the actual motor settings.  We never set either motor
   // to a negative value.
-  const int maximum = 60;
+  const int maximum = 60; //limiter if the difference is too high, will only travel at this speed
   if (power_difference > maximum)
     power_difference = maximum;
   if (power_difference < -maximum)
     power_difference = -maximum;
 
-  if (power_difference < 0)
+  if (power_difference < 0) //otherwise use the unchanged value to the motors.
     set_motors(maximum + power_difference, maximum);
   else
     set_motors(maximum, maximum - power_difference);
@@ -73,9 +73,9 @@ void setup () {
   for (counter=0; counter<80; counter++)
   {
     if (counter < 20 || counter >= 60)
-      OrangutanMotors::setSpeeds(40, -40);
+      set_motors(40, -40);
     else
-      OrangutanMotors::setSpeeds(-40, 40);
+      set_motors(-40, 40);
 
     // This function records a set of sensor readings and keeps
     // track of the minimum and maximum values encountered.  The
@@ -88,7 +88,7 @@ void setup () {
     // 80*20 = 1600 ms.
     delay(20);
   }
-  OrangutanMotors::setSpeeds(0, 0);
+  set_motors(0, 0);
 }
 
 void loop () {
