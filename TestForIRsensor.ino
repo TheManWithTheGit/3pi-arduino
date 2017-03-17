@@ -16,16 +16,25 @@ Pololu3pi bot;
 unsigned int sensors[5]; // an array to hold sensor values
 unsigned int lastCentrePos = 0;
 long integral = 0;
-int counter = 0;
-int IRone=23;
-int IRtwo=24;
-int IRthree=25;
-int IRfour=26;
-int IRfive=27;
+unsigned int counter = 0;
+unsigned int IRone=23;
+unsigned int IRtwo=24;
+unsigned int IRthree=25;
+unsigned int IRfour=26;
+unsigned int IRfive=27;
 
+unsigned int sIRone=23;
+unsigned int sIRtwo=24;
+unsigned int sIRthree=25;
+unsigned int sIRfour=26;
+unsigned int sIRfive=27;
+unsigned int out=0;
 
 void setup () {
- /* delay(1000);
+  lcd.gotoXY(0, 0);
+  print("wait");
+  wait_for_button_press(ANY_BUTTON);
+  delay(1000);
   unsigned int counter; // used as a simple timer
 
   // This must be called at the beginning of 3pi code, to set up the
@@ -34,9 +43,9 @@ void setup () {
   bot.init(2000);
   // Auto-calibration: turn right and left while calibrating the
   // sensors.
-  for (counter=0; counter<120; counter++)
+  for (counter=0; counter<160; counter++)
   {
-    if (counter < 40 || counter >= 80)
+    if (counter < 40 || counter >= 120)
       set_motors(60, -60);
     else
       set_motors(-60, 60);
@@ -50,10 +59,13 @@ void setup () {
 
     // Since our counter runs to 80, the total delay will be
     // 80*20 = 1600 ms.
-    delay(10);
+    delay(1);
   }
   set_motors(0, 0);
-  */
+  
+  OrangutanBuzzer::playFrequency(3000, 500, 14);
+ 
+ 
 }
 
 void loop () {
@@ -63,9 +75,16 @@ void loop () {
 void LINE_func(void) {
  //defining and initialising ldrs for line follow to zero.
   while (1) {
+    unsigned int out = bot.readLine(sensors, IR_EMITTERS_ON);
     clear();
-  left_value = analogRead(IRone);
-  right_value = analogRead(IRfive);
+   int left_value;
+   int right_value;
+  unsigned int outOne;
+  unsigned int outTwo;
+  outOne=out[0];
+  outTwo=out[4];
+  left_value = analogRead(outOne);
+  right_value = analogRead(outTwo);
   lcd.gotoXY(0, 0);
   print("l: ");
   lcd_goto_xy(3, 0);
@@ -74,7 +93,7 @@ void LINE_func(void) {
   lcd.print("r: ");
   lcd.gotoXY(3, 1);
   lcd.print(right_value);
-  delay(1000);
+  delay(200);
   }
 }
 
