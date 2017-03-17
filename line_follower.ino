@@ -19,6 +19,9 @@ int counter = 0;
 
 
 void setup () {
+ lcd.gotoXY(0, 0);
+  print("wait");
+  wait_for_button_press(ANY_BUTTON);
   delay(1000);
   unsigned int counter; // used as a simple timer
 
@@ -28,9 +31,9 @@ void setup () {
   bot.init(2000);
   // Auto-calibration: turn right and left while calibrating the
   // sensors.
-  for (counter=0; counter<120; counter++)
+  for (counter=0; counter<160; counter++)
   {
-    if (counter < 40 || counter >= 80)
+    if (counter < 40 || counter >= 120)
       set_motors(60, -60);
     else
       set_motors(-60, 60);
@@ -44,7 +47,7 @@ void setup () {
 
     // Since our counter runs to 80, the total delay will be
     // 80*20 = 1600 ms.
-    delay(10);
+    delay(2);
   }
   set_motors(0, 0);
 }
