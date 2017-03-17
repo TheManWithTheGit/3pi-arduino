@@ -17,10 +17,15 @@ unsigned int sensors[5]; // an array to hold sensor values
 unsigned int lastCentrePos = 0;
 long integral = 0;
 int counter = 0;
+int IRone=23;
+int IRtwo=24;
+int IRthree=25;
+int IRfour=26;
+int IRfive=27;
 
 
 void setup () {
-  delay(1000);
+ /* delay(1000);
   unsigned int counter; // used as a simple timer
 
   // This must be called at the beginning of 3pi code, to set up the
@@ -48,6 +53,7 @@ void setup () {
     delay(10);
   }
   set_motors(0, 0);
+  */
 }
 
 void loop () {
@@ -57,37 +63,19 @@ void loop () {
 void LINE_func(void) {
  //defining and initialising ldrs for line follow to zero.
   while (1) {
-  // Get the position of the line.  Note that we *must* provide
-  // the "sensors" argument to read_line() here, even though we
-  // are not interested in the individual sensor readings.
-  unsigned int position = bot.readLine(sensors, IR_EMITTERS_ON);
-
-  // The "centrePos" term should be 0 when we are on the line.
-  int centrePos = (int)position - 2000;
-
-  // Compute the change in position and the current absolute position
-  int delta = centrePos - lastCentrePos;
-  integral += centrePos;
-
-  // Remember the last position.
-  lastCentrePos = centrePos;
-
-  //this equation will increase/decrease motor speed depending on the conditions above and constants
-  int powerDiff = centrePos/20 + integral/10000 + delta*3/2;
-
-  // Compute the actual motor settings.  We never set either motor
-  // to a negative value.
-  const int maximum = 60; //limiter if the difference is too high, will only travel at this speed
-  if (powerDiff > maximum)
-    powerDiff = maximum;
-  if (powerDiff < -maximum)
-    powerDiff = -maximum;
-
-  if (powerDiff < 0) //otherwise use the unchanged value to the motors.
-    set_motors((maximum + powerDiff)*3, maximum*3);
-  else
-    set_motors(maximum*3, (maximum - powerDiff)*3);
-  } 
+    clear();
+  left_value = analogRead(IRone);
+  right_value = analogRead(IRfive);
+  lcd.gotoXY(0, 0);
+  print("l: ");
+  lcd_goto_xy(3, 0);
+  lcd.print(left_value);
+  lcd.gotoXY(0, 1);
+  lcd.print("r: ");
+  lcd.gotoXY(3, 1);
+  lcd.print(right_value);
+  delay(1000);
+  }
 }
 
 
