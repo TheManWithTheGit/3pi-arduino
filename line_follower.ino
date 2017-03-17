@@ -6,13 +6,14 @@
 #include <OrangutanLCD.h>
 #include <OrangutanPushbuttons.h>
 #include <OrangutanBuzzer.h>
+
 void motors_init(void);
 
 OrangutanLCD lcd; //reassigning the libraries to something easier to type
 OrangutanAnalog analog;
-Pololu3pi robot;
+Pololu3pi bot;
 unsigned int sensors[5]; // an array to hold sensor values
-unsigned int last_proportional = 0;
+unsigned int lastCentrePos = 0;
 long integral = 0;
 int counter = 0;
 
@@ -24,7 +25,7 @@ void setup () {
   // This must be called at the beginning of 3pi code, to set up the
   // sensors.  We use a value of 2000 for the timeout, which
   // corresponds to 2000*0.4 us = 0.8 ms on our 20 MHz processor.
-  robot.init(2000);
+  bot.init(2000);
   // Auto-calibration: turn right and left while calibrating the
   // sensors.
   for (counter=0; counter<120; counter++)
@@ -39,7 +40,7 @@ void setup () {
     // IR_EMITTERS_ON argument means that the IR LEDs will be
     // turned on during the reading, which is usually what you
     // want.
-    robot.calibrateLineSensors(IR_EMITTERS_ON);
+    bot.calibrateLineSensors(IR_EMITTERS_ON);
 
     // Since our counter runs to 80, the total delay will be
     // 80*20 = 1600 ms.
@@ -58,38 +59,35 @@ void LINE_func(void) {
   // Get the position of the line.  Note that we *must* provide
   // the "sensors" argument to read_line() here, even though we
   // are not interested in the individual sensor readings.
-  unsigned int position = robot.readLine(sensors, IR_EMITTERS_ON);
+  unsigned int position = bot.readLine(sensors, IR_EMITTERS_ON);
 
-  // The "proportional" term should be 0 when we are on the line.
-  int proportional = (int)position - 2000;
+  // The "centrePos" term should be 0 when we are on the line.
+  int centrePos = (int)position - 2000;
 
   // Compute the change in position and the current absolute position
-  int derivative = proportional - last_proportional;
-  integral += proportional;
+  int delta = centrePos - lastCentrePos;
+  integral += centrePos;
 
   // Remember the last position.
-  last_proportional = proportional;
+  lastCentrePos = centrePos;
 
-  // Compute the difference between the two motor power settings,
-  // m1 - m2.  If this is a positive number the robot will turn
-  // to the right.  If it is a negative number, the robot will
-  // turn to the left, and the magnitude of the number determines
-  // the sharpness of the turn.  You can adjust the constants by which
-  // the proportional, integral, and derivative terms are multiplied to
-  // improve performance.
-  int power_difference = proportional/20 + integral/10000 + derivative*3/2;
+  //this equation will increase/decrease motor speed depending on the conditions above and constants
+  int powerDiff = centrePos/20 + integral/10000 + delta*3/2;
 
   // Compute the actual motor settings.  We never set either motor
   // to a negative value.
   const int maximum = 60; //limiter if the difference is too high, will only travel at this speed
-  if (power_difference > maximum)
-    power_difference = maximum;
-  if (power_difference < -maximum)
-    power_difference = -maximum;
+  if (powerDiff > maximum)
+    powerDiff = maximum;
+  if (powerDiff < -maximum)
+    powerDiff = -maximum;
 
-  if (power_difference < 0) //otherwise use the unchanged value to the motors.
-    set_motors(maximum + power_difference, maximum);
+  if (powerDiff < 0) //otherwise use the unchanged value to the motors.
+    set_motors((maximum + powerDiff)*3, maximum*3);
   else
-    set_motors(maximum, maximum - power_difference);
+    set_motors(maximum*3, (maximum - powerDiff)*3);
   } 
 }
+
+
+//pin 23 to 27 are the IR pins
