@@ -70,12 +70,12 @@ void setup () {
   robot.init(2000);
   // Auto-calibration: turn right and left while calibrating the
   // sensors.
-  for (counter=0; counter<80; counter++)
+  for (counter=0; counter<120; counter++)
   {
-    if (counter < 20 || counter >= 60)
-      set_motors(40, -40);
+    if (counter < 40 || counter >= 80)
+      set_motors(60, -60);
     else
-      set_motors(-40, 40);
+      set_motors(-60, 60);
 
     // This function records a set of sensor readings and keeps
     // track of the minimum and maximum values encountered.  The
@@ -86,7 +86,7 @@ void setup () {
 
     // Since our counter runs to 80, the total delay will be
     // 80*20 = 1600 ms.
-    delay(20);
+    delay(10);
   }
   set_motors(0, 0);
 }
