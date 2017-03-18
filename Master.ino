@@ -18,6 +18,11 @@ int motionState;
 
 void setup() {
 	motionState = LDR_FOLLOW;
+	
+	lcd.gotoXY(0, 0);
+	print("PHASE: 0");
+	wait_for_button_press(ANY_BUTTON);
+	delay(1000);
 }
 
 void loop() {
