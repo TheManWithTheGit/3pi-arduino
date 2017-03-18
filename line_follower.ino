@@ -16,7 +16,14 @@ unsigned int sensors[5]; // an array to hold sensor values
 unsigned int lastCentrePos = 0;
 long integral = 0;
 int counter = 0;
-
+int TILTpin = 0;
+unsigned int sensorWithNoise=0;
+unsigned int position;
+unsigned int sensorOne;
+unsigned int sensorTwo;
+unsigned int sensorThree;
+unsigned int sensorFour;
+unsigned int sensorFive;
 
 void setup () {
   lcd.gotoXY(0, 0);
@@ -60,13 +67,36 @@ void loop () {
 }
 
 void LINE_func(void) {
- //defining and initialising ldrs for line follow to zero.
+  //turns the robot 180
+  set_motors(255,-255);
+  delay(120);
+  set_motors(0,0);
+  //defining and initialising ldrs for line follow to zero.
   while (1) {
   // Get the position of the line.  Note that we *must* provide
   // the "sensors" argument to read_line() here, even though we
   // are not interested in the individual sensor readings.
-  unsigned int position = bot.readLine(sensors, IR_EMITTERS_ON);
-
+  sensorWithNoise = bot.readLine(sensors, IR_EMITTERS_ON);
+    
+    //denoising the IR sensors
+    position=noiseFilter(sensorWithNoise);
+    
+    sensorOne=noiseFilter(sensors[0]);
+    sensorTwo=noiseFilter(sensors[1]);
+    sensorThree=noiseFilter(sensors[2]);
+    sensorFour=noiseFilter(sensors[3]);
+    sensorFive=noiseFilter(sensors[4]);
+    
+  //if the robot doesn't detect the line on all sensors, enters search mode
+  if (sensorOne < 1000 && sensorTwo < 1000 && sensorThree < 1000 && sensorFour < 1000 && sensorFive < 1000)
+    SEARCH_MODE; 
+  
+  TILTpin=analogRead(5); //reading the tilt sensor
+  if (TILTpin < 355) //checking if the robot is angled for the seesaw
+  {
+    motionState=TILT_BALANCE;
+    break;
+  }
   // The "centrePos" term should be 0 when we are on the line.
   int centrePos = (int)position - 2000;
 
@@ -95,5 +125,3 @@ void LINE_func(void) {
   } 
 }
 
-
-//pin 23 to 27 are the IR pins
