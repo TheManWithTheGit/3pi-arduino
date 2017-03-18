@@ -19,7 +19,7 @@ int counter = 0;
 
 
 void setup () {
- lcd.gotoXY(0, 0);
+  lcd.gotoXY(0, 0);
   print("wait");
   wait_for_button_press(ANY_BUTTON);
   delay(1000);
@@ -47,9 +47,12 @@ void setup () {
 
     // Since our counter runs to 80, the total delay will be
     // 80*20 = 1600 ms.
-    delay(2);
+    delay(1);
   }
   set_motors(0, 0);
+  
+  OrangutanBuzzer::playFrequency(1000, 500, 14);
+ 
 }
 
 void loop () {
