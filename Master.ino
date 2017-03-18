@@ -17,12 +17,36 @@ int motionState;
 
 
 void setup() {
-	motionState = LDR_FOLLOW;
-	
+	OrangutanBuzzer::playFrequency(3000, 250, 14);
+	clear();
 	lcd.gotoXY(0, 0);
-	print("PHASE: 0");
-	wait_for_button_press(ANY_BUTTON);
-	delay(1000);
+	print("SELECT");
+	lcd.gotoXY(0, 1);
+	print("MODE:");
+	unsigned char buttonPress = get_single_debounced_button_press(ANY_BUTTON);
+	
+	if (buttonPress & BUTTON_A) {
+		motionState=LDR_FOLLOW;
+		clear();
+		lcd.gotoXY(0, 0);
+		print("LDR");
+		OrangutanBuzzer::playFrequency(3000, 250, 14);
+	}
+	if (buttonPress & BUTTON_B) {
+		motionState=LINE_FOLLOW;
+		clear();
+		lcd.gotoXY(0, 0);
+		print("LINE");
+		OrangutanBuzzer::playFrequency(3000, 250, 14);
+	}
+	if (buttonPress & BUTTON_C) {
+		motionState=TILT_BALANCE;
+		clear();
+		lcd.gotoXY(0, 0);
+		print("TILT");
+		OrangutanBuzzer::playFrequency(3000, 250, 14);
+	}
+	delay(500);
 }
 
 void loop() {
@@ -31,15 +55,15 @@ void loop() {
 	{
 	case LDR_FOLLOW:
 		LDR_func();
-		break;
+		
 
 	case LINE_FOLLOW:
 		LINE_func();
-		break;
+		
 
 	case TILT_BALANCE:
 		TILT_func();
-		break;
+		
 	}
 
 }
