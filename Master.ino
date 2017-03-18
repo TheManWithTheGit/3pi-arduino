@@ -4,11 +4,17 @@
 OrangutanLCD lcd;
 OrangutanAnalog analog;
 
-// variables for the LDR
+// variables for the LDR_func
 int left_ldr = 6;
 int right_ldr = 7;
 int left_value = 0;
 int right_value = 0;
+// variables for the LINE_func
+
+//variables for the TILT_func
+
+//variables for the SEARCH_MODE
+unsigned int sensorsSearch[5];
 //related to switching states for the course
 int motionState;
 #define LDR_FOLLOW 1;
@@ -25,21 +31,24 @@ void setup() {
 	print("MODE:");
 	unsigned char buttonPress = get_single_debounced_button_press(ANY_BUTTON);
 	
-	if (buttonPress & BUTTON_A) {
+	if (buttonPress & BUTTON_A) 
+	{
 		motionState=LDR_FOLLOW;
 		clear();
 		lcd.gotoXY(0, 0);
 		print("LDR");
 		OrangutanBuzzer::playFrequency(3000, 250, 14);
 	}
-	if (buttonPress & BUTTON_B) {
+	if (buttonPress & BUTTON_B) 
+	{
 		motionState=LINE_FOLLOW;
 		clear();
 		lcd.gotoXY(0, 0);
 		print("LINE");
 		OrangutanBuzzer::playFrequency(3000, 250, 14);
 	}
-	if (buttonPress & BUTTON_C) {
+	if (buttonPress & BUTTON_C) 
+	{
 		motionState=TILT_BALANCE;
 		clear();
 		lcd.gotoXY(0, 0);
@@ -77,7 +86,20 @@ void LINE_func(void) {
 void TILT_func(void) {
 	//todo, merged from other branches.
 }
-
+void SEARCH_mode(void) {
+	while(1)
+	{
+ 	 clear();
+	 lcd.gotoXY(0, 0);
+ 	 print("SEARCH");
+ 	 set_motors(30,50);
+ 	 read_line_sensors(sensors, IR_EMITTERS_ON);
+ 	 if (sensors[0] > 900 || sensors[1] > 900 || sensors[2] > 900 || sensors[3] > 900 || sensors[4] > 900)
+ 	     break;
+	}
+	
+	motionState=LINE_func;
+}
 //outputs an int, takes in an int, takes median of input values
 int noiseFilter(int number) //noise filter so that the robot doesn't go crazy because of noise
 {
