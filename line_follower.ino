@@ -89,7 +89,7 @@ void LINE_func(void) {
     
   //if the robot doesn't detect the line on all sensors, enters search mode
   if (sensorOne < 1000 && sensorTwo < 1000 && sensorThree < 1000 && sensorFour < 1000 && sensorFive < 1000)
-    SEARCH_MODE; 
+    SEARCH_mode; 
   
   TILTpin=analogRead(5); //reading the tilt sensor
   if (TILTpin < 355) //checking if the robot is angled for the seesaw
