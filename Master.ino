@@ -1,8 +1,16 @@
-#include <OrangutanLCD.h>
-#include <OrangutanAnalog.h>
+#include <Pololu3pi.h>
+#include <PololuQTRSensors.h>
 #include <OrangutanMotors.h>
+#include <OrangutanAnalog.h>
+#include <OrangutanLEDs.h>
+#include <OrangutanLCD.h>
+#include <OrangutanPushbuttons.h>
+#include <OrangutanBuzzer.h>
+
+void motors_init(void);
 OrangutanLCD lcd;
 OrangutanAnalog analog;
+Pololu3pi bot;
 
 // variables for the LDR_func
 int left_ldr = 6;
