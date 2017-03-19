@@ -112,7 +112,7 @@ void LINE_func(void) {
 
   // Compute the actual motor settings.  We never set either motor
   // to a negative value.
-  const int maximum = 60; //limiter if the difference is too high, will only travel at this speed
+  const int maximum = 70; //limiter if the difference is too high, will only travel at this speed
   if (powerDiff > maximum)
     powerDiff = maximum;
   if (powerDiff < -maximum)
