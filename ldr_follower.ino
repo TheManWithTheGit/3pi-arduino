@@ -46,17 +46,17 @@ void loop() {
 	{
 		for (z = 0; z < 1; z++)
 		{
-			set_motors(200, -200);
+			set_motors(150, -150);
 			delay(50);
 			set_motors(0, 0);
 		}
 		if (left_value < right_value)
-			set_motors(20, 30);
+			set_motors(60, 70);
 		else if (left_value > right_value)
-			set_motors(30, 20);
+			set_motors(70, 60);
 	}
 	else
-		set_motors(200, -200);
+		set_motors(150, -150);
 
 
 
