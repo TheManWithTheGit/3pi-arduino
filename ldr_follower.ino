@@ -37,6 +37,13 @@ void setup() {
 }
 
 void loop() {
+	//checks if the Line follow sensors detect a line.
+	read_line_sensors(sensors, IR_EMITTERS_ON);
+	sensorOne = noiseFilter(sensors[0]);
+	sensorTwo = noiseFilter(sensors[1]);
+	sensorThree = noiseFilter(sensors[2]);
+	sensorFour = noiseFilter(sensors[3]);
+	sensorFive = noiseFilter(sensors[4]);
 	
 	left_value = analogRead(left_ldr);
 	right_value = analogRead(right_ldr);
@@ -50,6 +57,12 @@ void loop() {
 			delay(50);
 			set_motors(0, 0);
 		}
+		if (sensorOne > 900 || sensorTwo > 900 || sensorThree > 900 || sensorFour > 900 || sensorFive > 900)
+		{
+		//motionState = LINE_FOLLOW;
+		set_motors(0, 0);
+		break;
+		}
 		if (left_value < right_value)
 			set_motors(60, 70);
 		else if (left_value > right_value)
@@ -60,21 +73,9 @@ void loop() {
 
 
 
-	//checks if the Line follow sensors detect a line.
-	read_line_sensors(sensors, IR_EMITTERS_ON);
-	sensorOne = noiseFilter(sensors[0]);
-	sensorTwo = noiseFilter(sensors[1]);
-	sensorThree = noiseFilter(sensors[2]);
-	sensorFour = noiseFilter(sensors[3]);
-	sensorFive = noiseFilter(sensors[4]);
+	
 
-	if (sensorOne > 900 || sensorTwo > 900 || sensorThree > 900 || sensorFour > 900 || sensorFive > 900)
-	{
-		//motionState = LINE_FOLLOW;
-		set_motors(0, 0);
-		break;
-	}
-
+	
 }
 
 
