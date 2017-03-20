@@ -32,33 +32,33 @@ void setup() {
 	lcd.gotoXY(0, 0);
 	print("wait");
 	wait_for_button_press(ANY_BUTTON);
-	delay(1000);
+	delay(500);
 
-      bot.init(2000);
+	bot.init(2000);
 
 
-    for (counter=0; counter<160; counter++)
-    {
-    if (counter < 40 || counter >= 120)
-      set_motors(70, -70);
-    else
-      set_motors(-70, 70);
+	for (counter = 0; counter<40; counter++)
+	{
+		if (counter < 10 || counter >= 30)
+			set_motors(40, -40);
+		else
+			set_motors(-40, 40);
 
-    // This function records a set of sensor readings and keeps
-    // track of the minimum and maximum values encountered.  The
-    // IR_EMITTERS_ON argument means that the IR LEDs will be
-    // turned on during the reading, which is usually what you
-    // want.
-    bot.calibrateLineSensors(IR_EMITTERS_ON);
+		// This function records a set of sensor readings and keeps
+		// track of the minimum and maximum values encountered.  The
+		// IR_EMITTERS_ON argument means that the IR LEDs will be
+		// turned on during the reading, which is usually what you
+		// want.
+		bot.calibrateLineSensors(IR_EMITTERS_ON);
 
-    // Since our counter runs to 80, the total delay will be
-    // 80*20 = 1600 ms.
-    delay(3);
-  }
-  set_motors(0, 0);
-  
-  OrangutanBuzzer::playFrequency(1000, 500, 14);
- 
+		// Since our counter runs to 80, the total delay will be
+		// 80*20 = 1600 ms.
+		delay(2);
+	}
+	set_motors(0, 0);
+
+	OrangutanBuzzer::playFrequency(1000, 500, 14);
+
 
 
 }
@@ -73,42 +73,36 @@ void loop() {
 	sensorFive = noiseFilter(sensors[4]);
 
 	/*clear();
-        lcd.gotoXY(0,0);
-        lcd.print(sensorOne);
-        lcd.gotoXY(0,1);
-        lcd.print(sensorFive);
+	lcd.gotoXY(0,0);
+	lcd.print(sensorOne);
+	lcd.gotoXY(0,1);
+	lcd.print(sensorFive);
+	delay(200);
+	*/
 
-        delay(200);
-*/
 
-
-        left_value = analogRead(left_ldr);
+	left_value = analogRead(left_ldr);
 	right_value = analogRead(right_ldr);
 
 	if (left_value < 500 || right_value < 500)
 	{
-        
-		    /*for (z = 0; z < 1; z++)
-		    {
-			    set_motors(50, -50);
-			    delay(50);
-			    set_motors(0, 0);
-		    }*/
+
+		
 		if (sensorOne > 2000 || sensorTwo > 2000 || sensorThree > 2000 || sensorFour > 2000 || sensorFive > 2000)
 		{
-		    //motionState = LINE_FOLLOW;
-		    set_motors(0, 0);
-                delay(10000);
-		    //break;
+			//motionState = LINE_FOLLOW;
+			set_motors(0, 0);
+			delay(10000);
+			//break;
 		}
 		if (left_value < right_value)
-			set_motors(60, 120);
+			set_motors(70, 140);
 		else if (left_value > right_value)
-			set_motors(120, 60);
-        }
+			set_motors(140, 70);
+	}
 	else
-          set_motors(40, -40);
-	    
+		set_motors(110, -110);
+
 }
 
 int noiseFilter(int number) //noise filter so that the robot doesn't go crazy because of noise
