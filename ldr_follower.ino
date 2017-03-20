@@ -25,6 +25,7 @@ unsigned int sensorTwo;
 unsigned int sensorThree;
 unsigned int sensorFour;
 unsigned int sensorFive;
+int counter;
 
 void setup() {
 	analog.setMode(MODE_10_BIT);    // 10-bit analog-to-digital conversions
@@ -33,7 +34,33 @@ void setup() {
 	wait_for_button_press(ANY_BUTTON);
 	delay(1000);
 
-	
+      bot.init(2000);
+
+
+    for (counter=0; counter<160; counter++)
+    {
+    if (counter < 40 || counter >= 120)
+      set_motors(70, -70);
+    else
+      set_motors(-70, 70);
+
+    // This function records a set of sensor readings and keeps
+    // track of the minimum and maximum values encountered.  The
+    // IR_EMITTERS_ON argument means that the IR LEDs will be
+    // turned on during the reading, which is usually what you
+    // want.
+    bot.calibrateLineSensors(IR_EMITTERS_ON);
+
+    // Since our counter runs to 80, the total delay will be
+    // 80*20 = 1600 ms.
+    delay(3);
+  }
+  set_motors(0, 0);
+  
+  OrangutanBuzzer::playFrequency(1000, 500, 14);
+ 
+
+
 }
 
 void loop() {
@@ -44,40 +71,45 @@ void loop() {
 	sensorThree = noiseFilter(sensors[2]);
 	sensorFour = noiseFilter(sensors[3]);
 	sensorFive = noiseFilter(sensors[4]);
-	
-	left_value = analogRead(left_ldr);
+
+	/*clear();
+        lcd.gotoXY(0,0);
+        lcd.print(sensorOne);
+        lcd.gotoXY(0,1);
+        lcd.print(sensorFive);
+
+        delay(200);
+*/
+
+
+        left_value = analogRead(left_ldr);
 	right_value = analogRead(right_ldr);
 
-
-	if (left_value < 600 || right_value < 600)
+	if (left_value < 500 || right_value < 500)
 	{
-		for (z = 0; z < 1; z++)
+        
+		    /*for (z = 0; z < 1; z++)
+		    {
+			    set_motors(50, -50);
+			    delay(50);
+			    set_motors(0, 0);
+		    }*/
+		if (sensorOne > 2000 || sensorTwo > 2000 || sensorThree > 2000 || sensorFour > 2000 || sensorFive > 2000)
 		{
-			set_motors(150, -150);
-			delay(50);
-			set_motors(0, 0);
-		}
-		if (sensorOne > 900 || sensorTwo > 900 || sensorThree > 900 || sensorFour > 900 || sensorFive > 900)
-		{
-		//motionState = LINE_FOLLOW;
-		set_motors(0, 0);
-		break;
+		    //motionState = LINE_FOLLOW;
+		    set_motors(0, 0);
+                delay(10000);
+		    //break;
 		}
 		if (left_value < right_value)
-			set_motors(60, 70);
+			set_motors(60, 120);
 		else if (left_value > right_value)
-			set_motors(70, 60);
-	}
+			set_motors(60, 120);
+        }
 	else
-		set_motors(150, -150);
-
-
-
-	
-
-	
+          set_motors(40, -40);
+	    
 }
-
 
 int noiseFilter(int number) //noise filter so that the robot doesn't go crazy because of noise
 {
