@@ -104,7 +104,7 @@ void loop() {
 		if (left_value < right_value)
 			set_motors(60, 120);
 		else if (left_value > right_value)
-			set_motors(60, 120);
+			set_motors(120, 60);
         }
 	else
           set_motors(40, -40);
