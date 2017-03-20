@@ -100,13 +100,15 @@ void SEARCH_mode(void) {
  	 clear();
 	 lcd.gotoXY(0, 0);
  	 print("SEARCH");
- 	 set_motors(30,50);
+ 	 set_motors(50,70);
  	 read_line_sensors(sensors, IR_EMITTERS_ON);
  	 if (sensors[0] > 900 || sensors[1] > 900 || sensors[2] > 900 || sensors[3] > 900 || sensors[4] > 900)
+	 {
+	     motionState=LINE_func;
  	     break;
+	 }	
 	}
 	
-	motionState=LINE_func;
 }
 //outputs an int, takes in an int, takes median of input values
 int noiseFilter(int number) //noise filter so that the robot doesn't go crazy because of noise
@@ -123,7 +125,7 @@ int noiseFilter(int number) //noise filter so that the robot doesn't go crazy be
 
 	bufferOne[4] = number; //save the new number to the end of the buffer
 
-	if (counter < 5) //trigger when the buffer is full
+	if (counter < 5) //since the buffer still has empty cells, return the first few numbers until its full
 	{
 		counter++;
 			return number;
@@ -140,7 +142,7 @@ int noiseFilter(int number) //noise filter so that the robot doesn't go crazy be
 			j++;
 			for (i = 0; i < 4 - j; i++) //takes lowest value and moves it
 			{
-				if (bufferTwo[i] > bufferTwo[i + 1])
+				if (bufferTwo[i] > bufferTwo[i + 1]) //relativly simple bubble sort
 				{
 					temp = bufferTwo[i];
 					bufferTwo[i] = bufferTwo[i + 1];
