@@ -37,11 +37,15 @@ unsigned int lastCentrePos = 0;
 int long integral = 0;
 int LINEcounter = 0;
 int TILTpin = 0;
+int TILTcentrePos = 0;
+int TILTposition = 0;
+
 int x = 0;
 unsigned int sensorWithNoise = 0;
 
 //variables for the TILT_func
-
+int tiltFlat = 0;
+int speed;
 //variables for the SEARCH_MODE
 unsigned int sensorsSearch[5];
 //variables for the noiseFilter
@@ -56,6 +60,8 @@ int motionState;
 void setup() {
 	
 	bot.init(2000); //This is required for the line follower sensors and timings
+	
+	tiltFlat=analogRead(5); //reads the tilt sensor and sets this as the desired value 
 	
 	OrangutanBuzzer::playFrequency(3000, 250, 14); //beep
 	clear();
@@ -286,8 +292,55 @@ void LINE_func(void) {
 			set_motors(maximum * 3, (maximum - powerDiff) * 3);
 	}
 }
-void TILT_func(void) {
-	//todo, merged from other branches.
+void TILT_func(void) { //this doesn't work :/
+	while (1) {
+		sensorWithNoise = analogRead(5); //reads the raw tilt sensor value
+		TILTposition = noiseFilter(sensorWithNoise); //cleans it
+
+		TILTcentrePos = TILTposition - tiltFlat; //makes 0 the level/desired value
+		//THE CODE BELOW IS A STOPGAP FOR A BETTER FUNCTION, BUT THIS BALANCING THINGS IS HARD
+		//THE BIGGEST PROBLEMS IS THAT THE TILT SENSOR DETECTS THE ROBOTS ACCELERATION, AND THAT AT LOW RPM THE MOTOR IS TOO WEAK, SO NO DELICATE MOVEMENT
+		if (TILTcentrePos > 10)//The bigger the angle/delta the faster it changes motor speed
+		{
+			speed++;
+			speed++;
+			speed++;
+		}
+		else if (TILTcentrePos < 10 && TILTcentrePos > 5)
+		{
+			speed--;
+			speed--;
+		}
+		else if (TILTcentrePos > -10 && TILTcentrePos < -5) //the order in this stack is not great, sorry
+		{
+			speed++;
+			speed++;
+		}
+		else if (TILTcentrePos < 5)
+		{
+			speed--;
+		}
+		else if (TILTcentrePos > -5)
+		{
+			speed++;
+		}
+		else if (TILTcentrePos < -10)
+		{
+			speed--;
+			speed--;
+			speed--;
+		}
+
+		//makes sure that the robot doesn't go too fast
+		if (speed > 30)
+			speed = 30;
+		else if (speed < -30)
+			speed = -30;
+
+		set_motors(speed, speed);
+
+		delay(1); //added a small delay so the tilt sensor doesn't detect the robots acceleration
+	}
 }
 void SEARCH_mode(void) {
 	while(1)
