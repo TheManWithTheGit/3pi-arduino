@@ -7,7 +7,8 @@
 #include <OrangutanPushbuttons.h>
 #include <OrangutanBuzzer.h>
 
-void motors_init(void);
+void motors_init(void); //required for the code to work
+//This shortens the libraries for easier typing
 OrangutanLCD lcd;
 OrangutanAnalog analog;
 Pololu3pi bot;
@@ -38,16 +39,17 @@ void setup() {
 	lcd.gotoXY(0, 1);
 	print("MODE:");
 	unsigned char buttonPress = get_single_debounced_button_press(ANY_BUTTON);
+	//I want to get a button press to select the mode I want to start with
 	
-	if (buttonPress & BUTTON_A) 
+	if (buttonPress & BUTTON_A) //Button A = LDR following mode and everything after
 	{
 		motionState=LDR_FOLLOW;
 		clear();
 		lcd.gotoXY(0, 0);
 		print("LDR");
-		OrangutanBuzzer::playFrequency(3000, 250, 14);
+		OrangutanBuzzer::playFrequency(3000, 250, 14); //the buzzes let me know its doing something
 	}
-	if (buttonPress & BUTTON_B) 
+	if (buttonPress & BUTTON_B) //Button B = line following mode and everything after
 	{
 		motionState=LINE_FOLLOW;
 		clear();
@@ -55,7 +57,7 @@ void setup() {
 		print("LINE");
 		OrangutanBuzzer::playFrequency(3000, 250, 14);
 	}
-	if (buttonPress & BUTTON_C) 
+	if (buttonPress & BUTTON_C) //Button C = seesaw balancing mode
 	{
 		motionState=TILT_BALANCE;
 		clear();
@@ -68,7 +70,7 @@ void setup() {
 
 void loop() {
 	//This is the main tree where all the functions get called to do thier job
-	switch (motionState)
+	switch (motionState)//motionState changes in the functions when certain conditions are met
 	{
 	case LDR_FOLLOW:
 		LDR_func();
@@ -100,9 +102,9 @@ void SEARCH_mode(void) {
  	 clear();
 	 lcd.gotoXY(0, 0);
  	 print("SEARCH");
- 	 set_motors(50,70);
+ 	 set_motors(50,70);//this makes the robot spin in a large circle
  	 read_line_sensors(sensors, IR_EMITTERS_ON);
- 	 if (sensors[0] > 900 || sensors[1] > 900 || sensors[2] > 900 || sensors[3] > 900 || sensors[4] > 900)
+ 	 if (sensors[0] > 1100 || sensors[1] > 1100 || sensors[2] > 1100 || sensors[3] > 1100 || sensors[4] > 1100)//This checks if any sensor is over a line, and if its is, resume
 	 {
 	     motionState=LINE_func;
  	     break;
@@ -125,7 +127,7 @@ int noiseFilter(int number) //noise filter so that the robot doesn't go crazy be
 
 	bufferOne[4] = number; //save the new number to the end of the buffer
 
-	if (counter < 5) //since the buffer still has empty cells, return the first few numbers until its full
+	if (counter < 5) //when the buffer start its still has empty cells. This returns the first few numbers until its full
 	{
 		counter++;
 			return number;
@@ -134,13 +136,13 @@ int noiseFilter(int number) //noise filter so that the robot doesn't go crazy be
 	{
 		for (i = 0; i < 5; i++)
 		{
-			bufferTwo[i] = bufferOne[i]; //puttng values into other buffer
+			bufferTwo[i] = bufferOne[i]; //puttng values into the other buffer
 		}
 		while (swap) //start of the sorting part
 		{
 			swap = false; //sets the loop to run once
 			j++;
-			for (i = 0; i < 4 - j; i++) //takes lowest value and moves it
+			for (i = 0; i < 4 - j; i++)
 			{
 				if (bufferTwo[i] > bufferTwo[i + 1]) //relativly simple bubble sort
 				{
