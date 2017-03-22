@@ -323,7 +323,7 @@ void TILT_func(void) { //this doesn't work :/
 
 	while (1) {
 		 //reads the raw tilt sensor value
-		TILTpos = noiseFilter(analogRead(pinFive)); //cleans it
+		TILTpos = analogRead(pinFive);
 
 		TILTcentrePos = TILTpos - tiltFlat; //makes 0 the level/desired value
 		//THE CODE BELOW IS A STOPGAP FOR A BETTER FUNCTION, BUT THIS BALANCING THINGS IS HARD
