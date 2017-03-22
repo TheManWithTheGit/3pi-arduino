@@ -123,48 +123,21 @@ void loop() {
 		case LDR_FOLLOW:
 		{
 			OrangutanBuzzer::playFrequency(3000, 500, 14);
-			LDR_func();
-		}
-		break;
-		case LINE_FOLLOW:
-		{
-			OrangutanBuzzer::playFrequency(3000, 500, 14);
-			LINE_func();
-		}
-		break;
-		case TILT_BALANCE:
-		{
-			OrangutanBuzzer::playFrequency(3000, 500, 14);
-			TILT_func();
-		}
-		break;
+			for (LDRcounter = 0; LDRcounter <= 40; LDRcounter++)			
+{				
+if (LDRcounter < 10 || LDRcounter >= 30)//turns a bit to one side, turns all the way to the other side, then re-centeres					
+set_motors(40, -40);				
+else					
+set_motors(-40, 40);				
+//this turns on an IR emitter, and reads the value that the arduino calculates from the wierd sensor				
+bot.calibrateLineSensors(IR_EMITTERS_ON);				
+//reading very different values doesn't matter, but time is more important				
+delay(1);			
+}			
+//stops the robot, just incase			
+set_motors(0, 0);		
 
-	}
-
-}
-
-void LDR_func(void) {
-	while (1) {
-		//the calibration runs once, so it can detect the line
-		for (y = 0; y < 1; y++)
-		{
-			//OrangutanBuzzer::playFrequency(2000, 10, 14);
-			for (LDRcounter = 0; LDRcounter <= 40; LDRcounter++)
-			{
-				if (LDRcounter < 10 || LDRcounter >= 30)//turns a bit to one side, turns all the way to the other side, then re-centeres
-					set_motors(40, -40);
-				else
-					set_motors(-40, 40);
-
-				//this turns on an IR emitter, and reads the value that the arduino calculates from the wierd sensor
-				bot.calibrateLineSensors(IR_EMITTERS_ON);
-				//reading very different values doesn't matter, but time is more important
-				delay(1);
-			}
-			//stops the robot, just incase
-			set_motors(0, 0);
-		}
-
+while(1){
 
 		//reads the values from the IR sensors, and cleans the signal
 		bot.readLineSensors(sensors, IR_EMITTERS_ON);
@@ -202,7 +175,7 @@ void LDR_func(void) {
 				delay(250);
 				set_motors(0, 0);
 				motionState = LINE_FOLLOW;
-				return; //breaks out of the LDR_func to move to the LINE_func in the switch
+				break; //breaks out of the LDR_func to move to the LINE_func in the switch
 			}
 			if (left_value < right_value) //I could've done the whole differential calc stuff, but this is lighter and does the job just as well
 				set_motors(70, 140);
@@ -213,13 +186,12 @@ void LDR_func(void) {
 			set_motors(110, -110); //spin spin spin
 		
 	}
-
-}
-void LINE_func(void) {
-	while (1) {
-		for (x = 0; x != 1; x++)
+		}
+		break;
+		case LINE_FOLLOW:
 		{
-
+			OrangutanBuzzer::playFrequency(3000, 500, 14);
+				
 			bot.init(2000);
 			// Auto-calibration: turn right and left while calibrating the
 			// sensors.
@@ -242,7 +214,8 @@ void LINE_func(void) {
 				delay(1);
 			}
 			set_motors(0, 0);
-		}
+		
+		
 
 		//defining and initialising ldrs for line follow to zero.
 		while (1) {
@@ -285,7 +258,7 @@ void LINE_func(void) {
 				if (TILTpin > tiltFlat+2 || TILTpin < tiltFlat-2) //checking if the robot is on the seesaw
 				{
 					motionState = TILT_BALANCE;
-					return;
+					break;
 				}
 				else
 					SEARCH_mode; //if its not on the seesaw, it must be lost, so search for the line again. In reality if it loses the line, its screwed.
@@ -319,73 +292,57 @@ void LINE_func(void) {
 			else
 				set_motors(maximum * 3, (maximum - powerDiff) * 3);
 		}
-	}
-}
-void TILT_func(void) { //this doesn't work :/
-	while (1) {
-		sensorWithNoise = analogRead(5); //reads the raw tilt sensor value
-		TILTposition = noiseFilter(sensorWithNoise); //cleans it
+		}
+		break;
+		case TILT_BALANCE:
+		{
+			OrangutanBuzzer::playFrequency(3000, 500, 14);
+			set_motors(120, -120);//turns the robot so that it can reverse onto the ramp, since it can only go up with the ball wheel at the front.
+				delay(300);
+				set_motors(-120, -120);
+				delay(500);
+				set_motors(-120, 120);
+				delay(250);
+				set_motors(0, 0);
+				delay(100);
 
-		TILTcentrePos = TILTposition - tiltFlat; //makes 0 the level/desired value
+
+	while (1) {
+		 //reads the raw tilt sensor value
+		TILTpos = noiseFilter(analogRead(pinFive)); //cleans it
+
+		TILTcentrePos = TILTpos - tiltFlat; //makes 0 the level/desired value
 		//THE CODE BELOW IS A STOPGAP FOR A BETTER FUNCTION, BUT THIS BALANCING THINGS IS HARD
 		//THE BIGGEST PROBLEMS IS THAT THE TILT SENSOR DETECTS THE ROBOTS ACCELERATION, AND THAT AT LOW RPM THE MOTOR IS TOO WEAK, SO NO DELICATE MOVEMENT
 
 		currentMillis = millis();
-		if (currentMillis - previousMillis >= interval)
+		if (currentMillis - previousMillis >= intv)
 		{
 			previousMillis = currentMillis; //resets the timer effectivly
 			clear();
 			lcd.gotoXY(0, 0);
-			lcd.print(speed);
+			lcd.print(analogRead(pinFive));
 			lcd.gotoXY(7, 0);
 			lcd.print(TILTcentrePos);
 			lcd.gotoXY(0, 1);
-			lcd.print(TILTposition);
+			lcd.print(TILTpos);
+	        }
+        
+               if(TILTcentrePos > 0)
+                  set_motors(-30,-30); //robot going backwards
+               else if(TILTcentrePos <0 )
+                  set_motors(30,30);
+               else if (TILTcentrePos == 0)
+                  set_motors(0, 0);
+        
+  }
 		}
+		break;
 
-
-		if (TILTcentrePos > 10)//The bigger the angle/delta the faster it changes motor speed
-		{
-			speed++;
-			speed++;
-			speed++;
-		}
-		else if (TILTcentrePos < 10 && TILTcentrePos > 5)
-		{
-			speed--;
-			speed--;
-		}
-		else if (TILTcentrePos > -10 && TILTcentrePos < -5) //the order in this stack is not great, sorry
-		{
-			speed++;
-			speed++;
-		}
-		else if (TILTcentrePos < 5)
-		{
-			speed--;
-		}
-		else if (TILTcentrePos > -5)
-		{
-			speed++;
-		}
-		else if (TILTcentrePos < -10)
-		{
-			speed--;
-			speed--;
-			speed--;
-		}
-
-		//makes sure that the robot doesn't go too fast
-		if (speed > 30)
-			speed = 30;
-		else if (speed < -30)
-			speed = -30;
-
-		set_motors(speed, speed);
-
-		delay(1); //added a small delay so the tilt sensor doesn't detect the robot's acceleration
 	}
-}
+
+
+
 void SEARCH_mode(void) {
 	while (1)
 	{
