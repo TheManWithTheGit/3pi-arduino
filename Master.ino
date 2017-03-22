@@ -43,14 +43,14 @@ unsigned int sensorWithNoise = 0;
 //variables for the TILT_func
 int tiltFlat = 0;
 int pinFive = A5; //for reading the pin five for the tilt sensor
-//variables for the SEARCH_MODE
+				  //variables for the SEARCH_MODE
 unsigned int sensorsSearch[5];
 //variables for the noiseFilter
 boolean swap = true; //setting up the switch statement for later
 int temp, i, j, counter = 0; //now making my variables
 int bufferOne[5] = {}; //this is where all the values go in
 int bufferTwo[5] = {}; //this is for when I need to sort the buffer
-//related to switching states for the course
+					   //related to switching states for the course
 int motionState;
 #define LDR_FOLLOW 1
 #define LINE_FOLLOW 2
@@ -61,7 +61,7 @@ int motionState;
 void setup() {
 
 	bot.init(2000); //This is required for the line follower sensors and timings
-        pinMode(pinFive, INPUT);
+	pinMode(pinFive, INPUT);
 	tiltFlat = analogRead(5); //reads the tilt sensor and sets this as the desired value 
 
 	OrangutanBuzzer::playFrequency(2000, 500, 10); //beep
@@ -109,52 +109,52 @@ void loop() {
 	//This is the main tree where all the functions get called to do thier job
 	switch (motionState)//motionState changes in the functions when certain conditions are met
 	{
-		case LDR_FOLLOW:
-		{
-			OrangutanBuzzer::playFrequency(3000, 500, 14);
-			LDR_func();
-		}
-		break;
-		case LINE_FOLLOW:
-		{
-			OrangutanBuzzer::playFrequency(3000, 500, 14);
-			LINE_func();
-		}
-		break;
-		case TILT_BALANCE:
-		{
-			OrangutanBuzzer::playFrequency(3000, 500, 14);
-			TILT_func();
-		}
-		break;
+	case LDR_FOLLOW:
+	{
+		OrangutanBuzzer::playFrequency(3000, 500, 14);
+		LDR_func();
+	}
+	break;
+	case LINE_FOLLOW:
+	{
+		OrangutanBuzzer::playFrequency(3000, 500, 14);
+		LINE_func();
+	}
+	break;
+	case TILT_BALANCE:
+	{
+		OrangutanBuzzer::playFrequency(3000, 500, 14);
+		TILT_func();
+	}
+	break;
 
 	}
 
 }
 
 void LDR_func(void) {
-  //the calibration runs once, so it can detect the line
-		for (y = 0; y < 1; y++)
+	//the calibration runs once, so it can detect the line
+	for (y = 0; y < 1; y++)
+	{
+		//OrangutanBuzzer::playFrequency(2000, 10, 14);
+		for (LDRcounter = 0; LDRcounter <= 40; LDRcounter++)
 		{
-			//OrangutanBuzzer::playFrequency(2000, 10, 14);
-			for (LDRcounter = 0; LDRcounter <= 40; LDRcounter++)
-			{
-				if (LDRcounter < 10 || LDRcounter >= 30)//turns a bit to one side, turns all the way to the other side, then re-centeres
-					set_motors(40, -40);
-				else
-					set_motors(-40, 40);
+			if (LDRcounter < 10 || LDRcounter >= 30)//turns a bit to one side, turns all the way to the other side, then re-centeres
+				set_motors(40, -40);
+			else
+				set_motors(-40, 40);
 
-				//this turns on an IR emitter, and reads the value that the arduino calculates from the wierd sensor
-				bot.calibrateLineSensors(IR_EMITTERS_ON);
-				//reading very different values doesn't matter, but time is more important
-				delay(1);
-			}
-			//stops the robot, just incase
-			set_motors(0, 0);
+			//this turns on an IR emitter, and reads the value that the arduino calculates from the wierd sensor
+			bot.calibrateLineSensors(IR_EMITTERS_ON);
+			//reading very different values doesn't matter, but time is more important
+			delay(1);
 		}
+		//stops the robot, just incase
+		set_motors(0, 0);
+	}
 
 	while (1) {
-		
+
 
 		//reads the values from the IR sensors, and cleans the signal
 		bot.readLineSensors(sensors, IR_EMITTERS_ON);
@@ -181,151 +181,132 @@ void LDR_func(void) {
 			lcd.print(sensorFive);
 		}
 
-		
+
 		if (left_value < 500 || right_value < 500) //if the robot sees lights, do stuff, otherwise spin
 		{
 
 
 			if (sensorOne >= 2000 || sensorTwo >= 2000 || sensorThree >= 2000 || sensorFour >= 2000 || sensorFive >= 2000)//if it detects the line, changes to LINE_func
 			{
-                                set_motors(100, 100);
-                                delay(250);
-				set_motors(120, -120); //this rotates the robot, since it will be facing the wrong way when it switches mode
+				set_motors(60, 60);
 				delay(250);
+				set_motors(120, -120); //this rotates the robot, since it will be facing the wrong way when it switches mode
+				delay(150);
 				set_motors(0, 0);
 				motionState = LINE_FOLLOW;
 				return; //breaks out of the LDR_func to move to the LINE_func in the switch
 			}
 			if (left_value < right_value) //I could've done the whole differential calc stuff, but this is lighter and does the job just as well
-				set_motors(70, 140);
+				set_motors(60, 110);
 			else if (left_value > right_value)
-				set_motors(140, 70);
+				set_motors(110, 60);
 		}
 		else
-			set_motors(110, -110); //spin spin spin
-		
+			set_motors(70, -70); //spin spin spin
+
 	}
 
 }
 void LINE_func(void) {
 
+	//proper sensor calibration for the IR sensors
+	for (LINEcounter = 0; LINEcounter <= 100; LINEcounter++)
+	{
+		if (LINEcounter < 25 || counter >= 75)
+			set_motors(40, -40);
+		else
+			set_motors(-40, 40);
 
-			bot.init(2000);
-			// Auto-calibration: turn right and left while calibrating the
-			// sensors.
-			for (LINEcounter = 0; LINEcounter <= 100; LINEcounter++)
-			{
-				if (LINEcounter < 25 || counter >= 75)
-					set_motors(40, -40);
-				else
-					set_motors(-40, 40);
+		bot.calibrateLineSensors(IR_EMITTERS_ON);
 
-				// This function records a set of sensor readings and keeps
-				// track of the minimum and maximum values encountered.  The
-				// IR_EMITTERS_ON argument means that the IR LEDs will be
-				// turned on during the reading, which is usually what you
-				// want.
-				bot.calibrateLineSensors(IR_EMITTERS_ON);
+		delay(10);
+	}
+	set_motors(0, 0);
 
-				// Since our counter runs to 80, the total delay will be
-				// 80*20 = 1600 ms.
-				delay(10);
-			}
-			set_motors(0, 0);
-		
 
-		
+
 	while (1) {
 		//defining and initialising ldrs for line follow to zero.
-		
-			// Get the pos of the line.  Note that we *must* provide
-			// the "sensors" argument to read_line() here, even though we
-			// are not interested in the individual sensor readings.
-			sensorWithNoise = bot.readLine(sensors, IR_EMITTERS_ON);
-                        
-                        
-                        //pos = noiseFilter(sensorWithNoise);//cleans the 0-4000 values for smoothness
-                        pos = sensorWithNoise;
-			//filtering all of the 
-			sensorOne = sensors[0];
-			sensorTwo = sensors[1];
-			sensorThree = sensors[2];
-			sensorFour = sensors[3];
-			sensorFive = sensors[4];
 
-			TILTpin = analogRead(A5); //reading the tilt sensor
-			currentMillis = millis();
-			if (currentMillis - previousMillis >= intv)
+		// Get the pos of the line.  Note that we *must* provide
+		// the "sensors" argument to read_line() here, even though we
+		// are not interested in the individual sensor readings.
+		sensorWithNoise = bot.readLine(sensors, IR_EMITTERS_ON);
+
+
+		//pos = noiseFilter(sensorWithNoise);//cleans the 0-4000 values for smoothness
+		pos = sensorWithNoise;
+		//filtering all of the 
+		sensorOne = sensors[0];
+		sensorTwo = sensors[1];
+		sensorThree = sensors[2];
+		sensorFour = sensors[3];
+		sensorFive = sensors[4];
+
+		TILTpin = analogRead(A5); //reading the tilt sensor
+		currentMillis = millis();
+		if (currentMillis - previousMillis >= intv)
+		{
+			previousMillis = currentMillis; //resets the timer effectivly
+			clear();
+			lcd.gotoXY(0, 0);
+			lcd.print(sensors[0]);
+			lcd.gotoXY(0, 1);
+			lcd.print(pos);
+		}
+
+
+		// The "centrePos" term should be 0 when we are on the line. Hence, that is the desired value
+		int centrePos = pos - 2000;
+
+		//if the robot doesn't detect the line on all sensors, enters search mode
+		if ((sensorOne < 100) && (sensorTwo < 100) && (sensorThree < 100) && (sensorFour < 100) && (sensorFive < 100))
+		{
+			//this allows the robot to come to a rest, so the tilt sensor doesn't get affected by the de-acceleration
+			if (TILTpin > tiltFlat + 2 || TILTpin < tiltFlat - 2) //checking if the robot is on the seesaw
 			{
-				previousMillis = currentMillis; //resets the timer effectivly
-				clear();
-				lcd.gotoXY(0, 0);
-				lcd.print(sensors[0]);
-				lcd.gotoXY(0, 1);
-				lcd.print(pos);
+				motionState = TILT_BALANCE;
+				return;
 			}
+			//else
+			//SEARCH_mode; //if its not on the seesaw, it must be lost, so search for the line again. In reality if it loses the line, its screwed.
+		}
 
 
-			// The "centrePos" term should be 0 when we are on the line. Hence, that is the desired value
-			int centrePos = pos - 2000;
-                          
-                          //if the robot doesn't detect the line on all sensors, enters search mode
-			/*if ((sensorOne < 100) && (sensorTwo < 100) && (sensorThree < 100) && (sensorFour < 100) && (sensorFive < 100))
-			{
-				 //this allows the robot to come to a rest, so the tilt sensor doesn't get affected by the de-acceleration
-				if (TILTpin > tiltFlat+2 || TILTpin < tiltFlat-2) //checking if the robot is on the seesaw
-				{
-					motionState = TILT_BALANCE;
-					return;
-				}
-				//else
-					//SEARCH_mode; //if its not on the seesaw, it must be lost, so search for the line again. In reality if it loses the line, its screwed.
-			}
-                        */
-                          
-                          
-			// Compute the change in pos and the current absolute pos from when it started
-			int delta = centrePos - lastCentrePos;
-			integral += centrePos;
 
-			// Remember the last pos for comparasion later
-			lastCentrePos = centrePos;
+		// Compute the change in pos and the current absolute pos from when it started
+		int delta = centrePos - lastCentrePos;
+		integral += centrePos;
 
-			//this equation will increase/decrease motor speed depending on the conditions above and constants
-			int powerDiff = (centrePos / 20) + (integral / 10000) + (delta * 3 / 2);
-                        OrangutanBuzzer::playFrequency(2000, 100, 7);
-			// Compute the actual motor settings. Never set either motor to a negative value
-			const int maximum = 70; //this value changes the maximum difference the motors will have between them, affects sharpness of the turn
-			if (powerDiff > maximum)
-				powerDiff = maximum;
-			else if (powerDiff < -maximum)
-				powerDiff = -maximum;
+		// Remember the last pos for comparasion later
+		lastCentrePos = centrePos;
 
-			if (powerDiff < 0) //depending if the value is positive or negative, it needs to be sent to the right wheels.
-				set_motors((maximum + powerDiff) * 1, maximum * 1); //I've set this to *3 because it easier than changing the powerDiff
-			else
-				set_motors(maximum * 1, (maximum - powerDiff) * 1);
-		
+		//this equation will increase/decrease motor speed depending on the conditions above and constants
+		int powerDiff = (centrePos / 20) + (integral / 10000) + (delta * 3 / 2);
+		OrangutanBuzzer::playFrequency(2000, 100, 7);
+		// Compute the actual motor settings. Never set either motor to a negative value
+		const int maximum = 70; //this value changes the maximum difference the motors will have between them, affects sharpness of the turn
+		if (powerDiff > maximum)
+			powerDiff = maximum;
+		else if (powerDiff < -maximum)
+			powerDiff = -maximum;
+
+		if (powerDiff < 0) //depending if the value is positive or negative, it needs to be sent to the right wheels.
+			set_motors((maximum + powerDiff) * 1, maximum * 1); //I've set this to *3 because it easier than changing the powerDiff
+		else
+			set_motors(maximum * 1, (maximum - powerDiff) * 1);
+
 	}
 }
 void TILT_func(void) { //this doesn't work :/
 
-                            /*    set_motors(120, -120);//turns the robot so that it can reverse onto the ramp, since it can only go up with the ball wheel at the front.
-				delay(300);
-				set_motors(-120, -120);
-				delay(500);
-				set_motors(-120, 120);
-				delay(250);
-				set_motors(0, 0);
-				delay(100);
-*/
-
+					  
 	while (1) {
-		 //reads the raw tilt sensor value
+		//reads the raw tilt sensor value
 		TILTpos = analogRead(pinFive);
 
 		TILTcentrePos = TILTpos - tiltFlat; //makes 0 the level/desired value
-		//THE CODE BELOW IS A STOPGAP FOR A BETTER FUNCTION, BUT THIS BALANCING THINGS IS HARD
+		//THE CODE BELOW IS A STOPGAP FOR A BETTER FUNCTION, BECAUSE THIS BALANCING THING IS HARD
 		//THE BIGGEST PROBLEMS IS THAT THE TILT SENSOR DETECTS THE ROBOTS ACCELERATION, AND THAT AT LOW RPM THE MOTOR IS TOO WEAK, SO NO DELICATE MOVEMENT
 
 		currentMillis = millis();
@@ -339,16 +320,16 @@ void TILT_func(void) { //this doesn't work :/
 			lcd.print(TILTcentrePos);
 			lcd.gotoXY(0, 1);
 			lcd.print(TILTpos);
-	        }
-        
-               if(TILTcentrePos > 0)
-                  set_motors(-30,-30); //robot going backwards
-               else if(TILTcentrePos <0 )
-                  set_motors(30,30);
-               else if (TILTcentrePos == 0)
-                  set_motors(0, 0);
-        
-  }
+		}
+
+		if (TILTcentrePos > 0)
+			set_motors(-20, -20); //robot going backwards
+		else if (TILTcentrePos < 0)
+			set_motors(20, 20);
+		else if (TILTcentrePos == 0)
+			set_motors(0, 0);
+
+	}
 }
 void SEARCH_mode(void) {
 	while (1)
@@ -369,7 +350,7 @@ void SEARCH_mode(void) {
 //outputs an int, takes in an int, takes median of input values
 int noiseFilter(int number) //noise filter so that the robot doesn't go crazy because of noise
 {
-	
+
 	for (i = 0; i <= 3; i++) //prevents the buffer from overflowing
 	{
 		bufferOne[i] = bufferOne[i + 1]; //shifts all the numbers down a cell
