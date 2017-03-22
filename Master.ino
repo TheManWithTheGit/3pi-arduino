@@ -42,7 +42,7 @@ unsigned int sensorWithNoise = 0;
 
 //variables for the TILT_func
 int tiltFlat = 0;
-int pinFive = 5; //for reading the pin five for the tilt sensor
+int pinFive = A5; //for reading the pin five for the tilt sensor
 //variables for the SEARCH_MODE
 unsigned int sensorsSearch[5];
 //variables for the noiseFilter
@@ -61,7 +61,7 @@ int motionState;
 void setup() {
 
 	bot.init(2000); //This is required for the line follower sensors and timings
-        pinMode(pinFive, OUTPUT);
+        pinMode(pinFive, INPUT);
 	tiltFlat = analogRead(5); //reads the tilt sensor and sets this as the desired value 
 
 	OrangutanBuzzer::playFrequency(2000, 500, 10); //beep
@@ -216,9 +216,9 @@ void LINE_func(void) {
 			for (LINEcounter = 0; LINEcounter <= 100; LINEcounter++)
 			{
 				if (LINEcounter < 25 || counter >= 75)
-					set_motors(80, -80);
+					set_motors(40, -40);
 				else
-					set_motors(-80, 80);
+					set_motors(-40, 40);
 
 				// This function records a set of sensor readings and keeps
 				// track of the minimum and maximum values encountered.  The
@@ -244,26 +244,25 @@ void LINE_func(void) {
 			sensorWithNoise = bot.readLine(sensors, IR_EMITTERS_ON);
                         
                         
-                        pos = noiseFilter(sensorWithNoise);//cleans the 0-4000 values for smoothness
-
+                        //pos = noiseFilter(sensorWithNoise);//cleans the 0-4000 values for smoothness
+                        pos = sensorWithNoise;
 			//filtering all of the 
-			sensorOne = noiseFilter(sensors[0]);
-			sensorTwo = noiseFilter(sensors[1]);
-			sensorThree = noiseFilter(sensors[2]);
-			sensorFour = noiseFilter(sensors[3]);
-			sensorFive = noiseFilter(sensors[4]);
+			sensorOne = sensors[0];
+			sensorTwo = sensors[1];
+			sensorThree = sensors[2];
+			sensorFour = sensors[3];
+			sensorFive = sensors[4];
 
-			TILTpin = analogRead(5); //reading the tilt sensor
+			TILTpin = analogRead(A5); //reading the tilt sensor
 			currentMillis = millis();
 			if (currentMillis - previousMillis >= intv)
 			{
 				previousMillis = currentMillis; //resets the timer effectivly
 				clear();
 				lcd.gotoXY(0, 0);
-				lcd.print(sensorOne);
+				lcd.print(sensors[0]);
 				lcd.gotoXY(0, 1);
 				lcd.print(pos);
-                                OrangutanBuzzer::playFrequency(5000, 100, 7);
 			}
 
 
@@ -304,15 +303,15 @@ void LINE_func(void) {
 				powerDiff = -maximum;
 
 			if (powerDiff < 0) //depending if the value is positive or negative, it needs to be sent to the right wheels.
-				set_motors((maximum + powerDiff) * 3, maximum * 3); //I've set this to *3 because it easier than changing the powerDiff
+				set_motors((maximum + powerDiff) * 1, maximum * 1); //I've set this to *3 because it easier than changing the powerDiff
 			else
-				set_motors(maximum * 3, (maximum - powerDiff) * 3);
+				set_motors(maximum * 1, (maximum - powerDiff) * 1);
 		
 	}
 }
 void TILT_func(void) { //this doesn't work :/
 
-                                set_motors(120, -120);//turns the robot so that it can reverse onto the ramp, since it can only go up with the ball wheel at the front.
+                            /*    set_motors(120, -120);//turns the robot so that it can reverse onto the ramp, since it can only go up with the ball wheel at the front.
 				delay(300);
 				set_motors(-120, -120);
 				delay(500);
@@ -320,7 +319,7 @@ void TILT_func(void) { //this doesn't work :/
 				delay(250);
 				set_motors(0, 0);
 				delay(100);
-
+*/
 
 	while (1) {
 		 //reads the raw tilt sensor value
