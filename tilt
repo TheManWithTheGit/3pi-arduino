@@ -1,0 +1,42 @@
+void TILT_func(void) { //this doesn't work :/
+
+                                set_motors(120, -120);//turns the robot so that it can reverse onto the ramp, since it can only go up with the ball wheel at the front.
+				delay(300);
+				set_motors(-120, -120);
+				delay(500);
+				set_motors(-120, 120);
+				delay(250);
+				set_motors(0, 0);
+				delay(100);
+
+
+	while (1) {
+		 //reads the raw tilt sensor value
+		TILTpos = noiseFilter(analogRead(pinFive)); //cleans it
+
+		TILTcentrePos = TILTpos - tiltFlat; //makes 0 the level/desired value
+		//THE CODE BELOW IS A STOPGAP FOR A BETTER FUNCTION, BUT THIS BALANCING THINGS IS HARD
+		//THE BIGGEST PROBLEMS IS THAT THE TILT SENSOR DETECTS THE ROBOTS ACCELERATION, AND THAT AT LOW RPM THE MOTOR IS TOO WEAK, SO NO DELICATE MOVEMENT
+
+		currentMillis = millis();
+		if (currentMillis - previousMillis >= intv)
+		{
+			previousMillis = currentMillis; //resets the timer effectivly
+			clear();
+			lcd.gotoXY(0, 0);
+			lcd.print(analogRead(pinFive));
+			lcd.gotoXY(7, 0);
+			lcd.print(TILTcentrePos);
+			lcd.gotoXY(0, 1);
+			lcd.print(TILTpos);
+	        }
+        
+               if(TILTcentrePos > 0)
+                  set_motors(-30,-30); //robot going backwards
+               else if(TILTcentrePos <0 )
+                  set_motors(30,30);
+               else if (TILTcentrePos == 0)
+                  set_motors(0, 0);
+        
+  }
+}
