@@ -8,13 +8,14 @@
 #include <OrangutanBuzzer.h>
 
 void motors_init(void); //required for the code to work
-						//This shortens the libraries for easier typing
+//This shortens the libraries for easier typing
 OrangutanLCD lcd;
 Pololu3pi bot;
 //timer for debugging inputs/outputs
 unsigned int previousMillis = 0; //could've made the variable long, but unnecessary
 const int intv = 333; //updates every 1/3 of a sec
 unsigned int currentMillis = 0;
+
 //variables for the LDR_func
 const int left_ldr = 6;
 const int right_ldr = 7;
@@ -30,6 +31,7 @@ unsigned int sensorThree;
 unsigned int sensorFour;
 unsigned int sensorFive;
 int LDRcounter;
+
 //variables for the LINE_func
 unsigned int lastCentrePos = 0;
 int long integral = 0;
@@ -43,26 +45,30 @@ unsigned int sensorWithNoise = 0;
 //variables for the TILT_func
 int tiltFlat = 0;
 int pinFive = A5; //for reading the pin five for the tilt sensor
-				  //variables for the SEARCH_MODE
+
+//variables for the SEARCH_MODE
 unsigned int sensorsSearch[5];
+
 //variables for the noiseFilter
 boolean swap = true; //setting up the switch statement for later
 int temp, i, j, counter = 0; //now making my variables
 int bufferOne[5] = {}; //this is where all the values go in
 int bufferTwo[5] = {}; //this is for when I need to sort the buffer
-					   //related to switching states for the course
+
+//related to switching states for the course
 int motionState;
-#define LDR_FOLLOW 1
+#define LDR_FOLLOW 1 //could've used const, but this'll do
 #define LINE_FOLLOW 2
 #define TILT_BALANCE 3
 
+//preface, yes I know that infinite loops are bad, but any other implementation is just more code for the same result, so while(1) it is
 
 
-void setup() {
+void setup() { //runs once
 
 	bot.init(2000); //This is required for the line follower sensors and timings
 	pinMode(pinFive, INPUT);
-	tiltFlat = analogRead(pinFive); //reads the tilt sensor and sets this as the desired value 
+	tiltFlat = analogRead(pinFive); //reads the tilt sensor and sets this as the desired value for calibration later
 
 	OrangutanBuzzer::playFrequency(2000, 500, 10); //beep
 	clear();
@@ -72,7 +78,7 @@ void setup() {
 	print("MODE:");
 }
 
-void loop() {
+void loop() { //runs forever
 
 	unsigned char buttonPress = OrangutanPushbuttons::getSingleDebouncedPress(BUTTON_A | BUTTON_B | BUTTON_C);
 	//I want to get a button press to select the mode I want to start with
@@ -83,7 +89,7 @@ void loop() {
 		clear();
 		lcd.gotoXY(0, 0);
 		print("LDR");
-		OrangutanBuzzer::playFrequency(1000, 250, 7); //the buzz let me know its doing something
+		OrangutanBuzzer::playFrequency(1000, 250, 14); //the buzz let me know its doing something
 		buttonPress = 9; //This stops the if block from running infintly once it has run once 
 	}
 	if (buttonPress & BUTTON_B) //Button B = line following mode and everything after
@@ -92,7 +98,7 @@ void loop() {
 		clear();
 		lcd.gotoXY(0, 0);
 		print("LINE");
-		OrangutanBuzzer::playFrequency(1000, 250, 7);
+		OrangutanBuzzer::playFrequency(1000, 250, 14);
 		buttonPress = 9;
 	}
 	if (buttonPress & BUTTON_C) //Button C = seesaw balancing mode
@@ -101,7 +107,7 @@ void loop() {
 		clear();
 		lcd.gotoXY(0, 0);
 		print("TILT");
-		OrangutanBuzzer::playFrequency(1000, 250, 7);
+		OrangutanBuzzer::playFrequency(1000, 250, 14);
 		buttonPress = 9;
 	}
 
@@ -133,7 +139,7 @@ void loop() {
 }
 
 void LDR_func(void) {
-	//the calibration runs once, so it can detect the line
+		//the calibration runs once, so it can detect the line
 		//OrangutanBuzzer::playFrequency(2000, 10, 14);
 		for (LDRcounter = 0; LDRcounter <= 40; LDRcounter++)
 		{
@@ -177,9 +183,9 @@ void LDR_func(void) {
 			previousMillis = currentMillis; //resets the timer
 			clear();
 			lcd.gotoXY(0, 0);
-			lcd.print(left_value);
+			lcd.print(left_value);//left LDR
 			lcd.gotoXY(0, 1);
-			lcd.print(sensorFive);
+			lcd.print(sensorFive); //rightmost IR sensor
 		}
 
 
@@ -248,9 +254,9 @@ void LINE_func(void) {
 			previousMillis = currentMillis;
 			clear();
 			lcd.gotoXY(0, 0);
-			lcd.print(sensors[0]);
+			lcd.print(sensors[0]);//leftmost IR sensor
 			lcd.gotoXY(0, 1);
-			lcd.print(pos);
+			lcd.print(pos);//value readLine outputs
 		}
 
 
@@ -305,7 +311,9 @@ void TILT_func(void) { //this doesn't work :/
 
 		TILTcentrePos = TILTpos - tiltFlat; //makes 0 the level/desired value
 		//THE CODE BELOW IS A STOPGAP FOR A BETTER FUNCTION, BECAUSE THIS BALANCING THING IS HARD
-		//THE BIGGEST PROBLEMS IS THAT THE TILT SENSOR DETECTS THE ROBOTS ACCELERATION, AND THAT AT LOW RPM THE MOTOR IS TOO WEAK, SO NO DELICATE MOVEMENT
+		//THE BIGGEST PROBLEMS IS THAT THE TILT SENSOR DETECTS THE ROBOTS ACCELERATION, 
+		//AND THAT AT LOW RPM THE MOTOR IS TOO WEAK, BUT WHEN ITS MOVES FASTER THE TILT SENSOR DETECTS THE MOVEMENT
+		//THIS SHOULD BE CHANGED BEFORE THE ACTUAL TEST, BUT IF YOU'RE READING THIS, WELL, I TRIED...
 
 		currentMillis = millis();
 		if (currentMillis - previousMillis >= intv)
@@ -313,14 +321,12 @@ void TILT_func(void) { //this doesn't work :/
 			previousMillis = currentMillis; //resets the timer effectivly
 			clear();
 			lcd.gotoXY(0, 0);
-			lcd.print(analogRead(pinFive));
-			lcd.gotoXY(7, 0);
-			lcd.print(TILTcentrePos);
+			lcd.print(analogRead(pinFive));//reads the raw tilt sensor value
 			lcd.gotoXY(0, 1);
-			lcd.print(TILTpos);
+			lcd.print(TILTcentrePos);//reads the "centered" tilt sensor value
 		}
 
-		//referring to the stopgap thing earlier, this basicly makes the robot move slowly forward until its level, 
+		//this basicly makes the robot move slowly forward until its level, 
 		//and back if it goes too far. Not very good
 		if (TILTcentrePos > 1)
 			set_motors(-20, -20); 
