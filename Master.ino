@@ -9,7 +9,7 @@
 
 void motors_init(void); //required for the code to work
 
-//This shortens the libraries for easier typing
+						//This shortens the libraries for easier typing
 OrangutanLCD lcd;
 Pololu3pi bot;
 
@@ -39,7 +39,7 @@ unsigned int lastCentrePos = 0;
 int long integral = 0;
 int LINEcounter = 0;
 int TILTpin = 0;
-int TILTcentrePos = 0; 
+int TILTcentrePos = 0;
 int TILTpos = 0;
 int x = 0;
 unsigned int sensorWithNoise = 0;
@@ -48,7 +48,7 @@ unsigned int sensorWithNoise = 0;
 int tiltFlat = 0;
 int pinFive = A5; //for reading the pin five for the tilt sensor
 
-//variables for the SEARCH_MODE
+				  //variables for the SEARCH_MODE
 unsigned int sensorsSearch[5];
 
 //variables for the noiseFilter
@@ -68,7 +68,7 @@ int motionState;
 
 void setup() { //runs once
 
-	bot.init(2000,1); //This is required for the line follower sensors and timings
+	bot.init(2000, 1); //This is required for the line follower sensors and timings
 	pinMode(pinFive, INPUT);
 	tiltFlat = analogRead(pinFive); //reads the tilt sensor and sets this as the desired value for later
 
@@ -93,6 +93,7 @@ void loop() { //runs forever
 		print("LDR");
 		OrangutanBuzzer::playFrequency(1000, 250, 14); //the buzz let me know its doing something
 		buttonPress = 9; //This stops the if block from running infintly once it has run once 
+		delay(200); //a slight delay so you can leat your finger escape
 	}
 	if (buttonPress & BUTTON_B) //Button B = line following mode and everything after
 	{
@@ -102,6 +103,7 @@ void loop() { //runs forever
 		print("LINE");
 		OrangutanBuzzer::playFrequency(1000, 250, 14);
 		buttonPress = 9;
+		delay(200);
 	}
 	if (buttonPress & BUTTON_C) //Button C = seesaw balancing mode
 	{
@@ -111,11 +113,11 @@ void loop() { //runs forever
 		print("TILT");
 		OrangutanBuzzer::playFrequency(1000, 250, 14);
 		buttonPress = 9;
+		delay(200);
 	}
 
-	delay(200); //delay so your finger has time to leave
 
-	//This is the main tree where all the functions get called to do thier job
+				//This is the main tree where all the functions get called to do thier job
 	switch (motionState)//motionState changes in the functions when certain conditions are met
 	{
 	case LDR_FOLLOW:
@@ -280,7 +282,7 @@ void LINE_func(void) {
 				motionState = TILT_BALANCE;
 				return;
 			}
-			
+
 		}
 
 
@@ -347,7 +349,7 @@ void TILT_func(void) { //this doesn't work :/
 	}
 }
 void SEARCH_mode(void) { //if the robot gets lost, hopefully this will make it find the line again
-	//This is getting cut for now, as it causes more problems than it solved.
+						 //This is getting cut for now, as it causes more problems than it solved.
 	while (1)
 	{
 		clear();
