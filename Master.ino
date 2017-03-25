@@ -68,7 +68,7 @@ int motionState;
 
 void setup() { //runs once
 
-	bot.init(2000); //This is required for the line follower sensors and timings
+	bot.init(2000,1); //This is required for the line follower sensors and timings
 	pinMode(pinFive, INPUT);
 	tiltFlat = analogRead(pinFive); //reads the tilt sensor and sets this as the desired value for later
 
