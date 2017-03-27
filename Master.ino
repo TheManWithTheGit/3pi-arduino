@@ -274,7 +274,7 @@ void LINE_func(void) {
 
 		//if the robot doesn't detect the line on all sensors, do below
 		
-		if ((TILTpin > tiltFlat + 15) && millis() >) //checking if the robot is on the seesaw
+		if (TILTpin > tiltFlat + 15) //checking if the robot is on the seesaw
 		{
 			delay(300); // this is to check if the tilt sensor is actually reading this because of gravity,
 				    //rather than the acceleration of the robot, so let it settle for a sec
@@ -354,7 +354,8 @@ void TILT_func(void) { //this doesn't work :/
 		int TILTpowerDiff = (TILTcentrePos * 2) - (deltaTILT);
 		// Compute the actual motor settings. Never set either motor to a negative value
 		const int TILTmaximum = 60; //this value changes the maximum difference the motors will have between them, affects sharpness of the turn
-		if (deltaTILT > 10); // I dont want it to change too quickly, otherwise it'll just get stuck in a feedback loop
+
+		if (deltaTILT > 10) // I dont want it to change too quickly, otherwise it'll just get stuck in a feedback loop
 			deltaTILT=10;
 		else if (deltaTILT < -10)
 			deltaTILT=-10;
