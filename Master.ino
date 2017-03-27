@@ -163,6 +163,8 @@ void LDR_func(void) {
 	//stops the robot, just incase
 	set_motors(0, 0);
 
+	//the calibration code above does get called again for re-calibrating the sensors, and I should've made the above code into a function.
+	//but since the code is only called twice, its much easier to just copy-paste and change the values.
 
 	//This loop keeps running until a condition is met and beaks out
 	while (1) {
@@ -306,13 +308,13 @@ void LINE_func(void) {
 			powerDiff = -maximum;
 
 		if (powerDiff < 0) //depending if the value is positive or negative, it needs to be sent to the right wheels.
-			set_motors((maximum + powerDiff) * 1, maximum * 1); //I've set this to *3 because it easier than changing the powerDiff
+			set_motors((maximum + powerDiff) * 0.5, maximum * 0.5); //I've set this to *0.5 because if I go any faster, the tilt sensor will be triggered by the robots acceleration and activate early
 		else
-			set_motors(maximum * 1, (maximum - powerDiff) * 1);
+			set_motors(maximum * 0.5, (maximum - powerDiff) * 0.5);
 
 	}
 }
-void TILT_func(void) { //this doesn't work :/
+void TILT_func(void) { //this doesn't really work :/
 	OrangutanBuzzer::playFrequency(1000, 250, 14);
 
 	while (1) {
@@ -321,7 +323,6 @@ void TILT_func(void) { //this doesn't work :/
 
 		TILTcentrePos = TILTpos - tiltFlat; //makes 0 the level/desired value
 		OrangutanBuzzer::playFrequency(1000, 250, 7);
-		//THE CODE BELOW IS A STOPGAP FOR A BETTER FUNCTION, BECAUSE THIS BALANCING THING IS HARD
 		//THE BIGGEST PROBLEMS IS THAT THE TILT SENSOR DETECTS THE ROBOTS ACCELERATION, 
 		//AND THAT AT LOW RPM THE MOTOR IS TOO WEAK, BUT WHEN ITS MOVES FASTER THE TILT SENSOR DETECTS THE MOVEMENT
 		//THIS SHOULD BE CHANGED BEFORE THE ACTUAL TEST, BUT IF YOU'RE READING THIS, WELL, I TRIED...
@@ -339,11 +340,7 @@ void TILT_func(void) { //this doesn't work :/
 			lcd.print(TILTcentrePos);//reads the "centered" tilt sensor value
 		}
 
-		//this basicly makes the robot move slowly forward until its level, 
-		//and back if it goes too far. Not very good
-		// The "centrePos" term should be 0 when we are on the line. Hence, we subtract 2000 from the sensor value
-
-
+		// The "TILTcentrePos" term should be 0 when we are on the line. Hence, we subtract the reference value from the readout
 		// Compute the change in pos and the current absolute pos from when it started
 		int deltaTILT = TILTcentrePos - TILTlastCentrePos;
 
@@ -351,6 +348,7 @@ void TILT_func(void) { //this doesn't work :/
 		TILTlastCentrePos = TILTcentrePos;
 
 		//this equation will increase/decrease motor speed depending on the conditions above and constants
+		//this equation specifically makes it where it will move forward, and if the angle begins to change, it'll move in the opposite direction to counter the movement
 		int TILTpowerDiff = (TILTcentrePos * 2) - (deltaTILT);
 		// Compute the actual motor settings. Never set either motor to a negative value
 		const int TILTmaximum = 60; //this value changes the maximum difference the motors will have between them, affects sharpness of the turn
@@ -373,7 +371,7 @@ void TILT_func(void) { //this doesn't work :/
 	}
 }
 void SEARCH_mode(void) { //if the robot gets lost, hopefully this will make it find the line again
-						 //This is getting cut for now, as it causes more problems than it solved.
+			 //This is getting cut for now, as it causes more problems than it solves.
 	while (1)
 	{
 		clear();
@@ -390,7 +388,9 @@ void SEARCH_mode(void) { //if the robot gets lost, hopefully this will make it f
 
 }
 //outputs an int, takes in an int, takes median of input values
-int noiseFilter(int number) //noise filter so that the robot doesn't go crazy because of noise //although it seems to be the cause of the robot going crazy. Oh the irony
+int noiseFilter(int number) //noise filter so that the robot doesn't go crazy because of noise 
+			    //although it seems to be causing the values read from the IR sensors to break, and so the robot goes haywire. 
+			    //Oh the irony
 {
 
 	for (i = 0; i <= 3; i++) //prevents the buffer from overflowing
