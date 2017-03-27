@@ -274,11 +274,11 @@ void LINE_func(void) {
 
 		//if the robot doesn't detect the line on all sensors, do below
 		
-		if (TILTpin > tiltFlat + 15) //checking if the robot is on the seesaw
+		if ((TILTpin > tiltFlat + 15) && millis() >) //checking if the robot is on the seesaw
 		{
 			delay(300); // this is to check if the tilt sensor is actually reading this because of gravity,
 				    //rather than the acceleration of the robot, so let it settle for a sec
-			if (TILTpin > tiltFlat + 15) //checking if the robot is on the seesaw
+			if (TILTpin > tiltFlat + 15)
 			{	
 				motionState = TILT_BALANCE;
 				return;
@@ -306,9 +306,9 @@ void LINE_func(void) {
 			powerDiff = -maximum;
 
 		if (powerDiff < 0) //depending if the value is positive or negative, it needs to be sent to the right wheels.
-			set_motors((maximum + powerDiff) * 2, maximum * 2); //I've set this to *3 because it easier than changing the powerDiff
+			set_motors((maximum + powerDiff) * 1, maximum * 1); //I've set this to *3 because it easier than changing the powerDiff
 		else
-			set_motors(maximum * 2, (maximum - powerDiff) * 2);
+			set_motors(maximum * 1, (maximum - powerDiff) * 1);
 
 	}
 }
@@ -351,9 +351,14 @@ void TILT_func(void) { //this doesn't work :/
 		TILTlastCentrePos = TILTcentrePos;
 
 		//this equation will increase/decrease motor speed depending on the conditions above and constants
-		int TILTpowerDiff = (TILTcentrePos * 2) - (deltaTILT * 2);
+		int TILTpowerDiff = (TILTcentrePos * 2) - (deltaTILT);
 		// Compute the actual motor settings. Never set either motor to a negative value
 		const int TILTmaximum = 60; //this value changes the maximum difference the motors will have between them, affects sharpness of the turn
+		if (deltaTILT > 10); // I dont want it to change too quickly, otherwise it'll just get stuck in a feedback loop
+			deltaTILT=10;
+		else if (deltaTILT < -10)
+			deltaTILT=-10;
+		
 		if (TILTpowerDiff > TILTmaximum)
 			TILTpowerDiff = TILTmaximum;
 
