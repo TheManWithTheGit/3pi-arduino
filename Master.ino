@@ -47,8 +47,8 @@ unsigned int sensorWithNoise = 0;
 //variables for the TILT_func
 int tiltFlat = 0;
 int pinFive = A5; //for reading the pin five for the tilt sensor
-
-				  //variables for the SEARCH_MODE
+int TILTlastCentrePos;
+//variables for the SEARCH_MODE
 unsigned int sensorsSearch[5];
 
 //variables for the noiseFilter
@@ -339,12 +339,30 @@ void TILT_func(void) { //this doesn't work :/
 
 		//this basicly makes the robot move slowly forward until its level, 
 		//and back if it goes too far. Not very good
-		if (TILTcentrePos > 1)
-			set_motors(-20, -20);
-		else if (TILTcentrePos < -1)
-			set_motors(20, 20);
-		else
-			set_motors(0, 0);
+		// The "centrePos" term should be 0 when we are on the line. Hence, we subtract 2000 from the sensor value
+
+
+		// Compute the change in pos and the current absolute pos from when it started
+		int deltaTILT = TILTcentrePos - TILTlastCentrePos;
+
+		// Remember the last pos for comparasion later
+		TILTlastCentrePos = TILTcentrePos;
+
+		//this equation will increase/decrease motor speed depending on the conditions above and constants
+		int TILTpowerDiff = (TILTcentrePos / 2) - (deltaTILT * 3 / 2);
+		// Compute the actual motor settings. Never set either motor to a negative value
+		const int TILTmaximum = 50; //this value changes the maximum difference the motors will have between them, affects sharpness of the turn
+		if (TILTpowerDiff > maximum)
+			TILTpowerDiff = maximum;
+		else if (TILTpowerDiff < -maximum)
+			TILTpowerDiff = -maximum;
+
+		set_motors(TILTpowerDiff, TILTpowerDiff );
+		
+		
+		
+		
+		
 
 	}
 }
