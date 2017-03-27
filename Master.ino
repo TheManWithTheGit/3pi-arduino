@@ -1,3 +1,21 @@
+Skip to content
+This repository
+Search
+Pull requests
+Issues
+Gist
+@TheManWithTheGit
+Sign out
+Unwatch 2
+Star 0
+Fork 0 TheManWithTheGit / 3pi - arduino
+Code  Pull requests 0  Projects 0  Pulse  Graphs  Settings
+Branch : master Find file Copy path3pi - arduino / Master.ino
+	5097341  11 minutes ago
+	@TheManWithTheGit TheManWithTheGit Added comments, changed LINE follow code to be slower
+	2 contributors @TheManWithTheGit @abarcovschi
+	RawBlameHistory
+	432 lines(355 sloc)  13.7 KB
 #include <Pololu3pi.h>
 #include <PololuQTRSensors.h>
 #include <OrangutanMotors.h>
@@ -7,9 +25,9 @@
 #include <OrangutanPushbuttons.h>
 #include <OrangutanBuzzer.h>
 
-void motors_init(void); //required for the code to work
+	void motors_init(void); //required for the code to work
 
-						//This shortens the libraries for easier typing
+							//This shortens the libraries for easier typing
 OrangutanLCD lcd;
 Pololu3pi bot;
 
@@ -117,7 +135,7 @@ void loop() { //runs forever
 	}
 
 
-				//This is the main tree where all the functions get called to do thier job
+	//This is the main tree where all the functions get called to do thier job
 	switch (motionState)//motionState changes in the functions when certain conditions are met
 	{
 	case LDR_FOLLOW:
@@ -275,13 +293,13 @@ void LINE_func(void) {
 		int centrePos = pos - 2000;
 
 		//if the robot doesn't detect the line on all sensors, do below
-		
+
 		if (TILTpin > tiltFlat + 15) //checking if the robot is on the seesaw
 		{
 			delay(300); // this is to check if the tilt sensor is actually reading this because of gravity,
-				    //rather than the acceleration of the robot, so let it settle for a sec
+						//rather than the acceleration of the robot, so let it settle for a sec
 			if (TILTpin > tiltFlat + 15)
-			{	
+			{
 				motionState = TILT_BALANCE;
 				return;
 			}
@@ -308,9 +326,9 @@ void LINE_func(void) {
 			powerDiff = -maximum;
 
 		if (powerDiff < 0) //depending if the value is positive or negative, it needs to be sent to the right wheels.
-			set_motors((maximum + powerDiff) * 0.5, maximum * 0.5); //I've set this to *0.5 because if I go any faster, the tilt sensor will be triggered by the robots acceleration and activate early
+			set_motors((maximum + powerDiff) * 1, maximum * 1); //I've set this to *0.5 because if I go any faster, the tilt sensor will be triggered by the robots acceleration and activate early
 		else
-			set_motors(maximum * 0.5, (maximum - powerDiff) * 0.5);
+			set_motors(maximum * 1, (maximum - powerDiff) * 1);
 
 	}
 }
@@ -354,24 +372,24 @@ void TILT_func(void) { //this doesn't really work :/
 		const int TILTmaximum = 60; //this value changes the maximum difference the motors will have between them, affects sharpness of the turn
 
 		if (deltaTILT > 10) // I dont want it to change too quickly, otherwise it'll just get stuck in a feedback loop
-			deltaTILT=10;
+			deltaTILT = 10;
 		else if (deltaTILT < -10)
-			deltaTILT=-10;
-		
+			deltaTILT = -10;
+
 		if (TILTpowerDiff > TILTmaximum)
 			TILTpowerDiff = TILTmaximum;
 
-		set_motors(TILTpowerDiff, TILTpowerDiff );
-		
-		
-		
-		
-		
+		set_motors(TILTpowerDiff, TILTpowerDiff);
+
+
+
+
+
 
 	}
 }
 void SEARCH_mode(void) { //if the robot gets lost, hopefully this will make it find the line again
-			 //This is getting cut for now, as it causes more problems than it solves.
+						 //This is getting cut for now, as it causes more problems than it solves.
 	while (1)
 	{
 		clear();
@@ -389,8 +407,8 @@ void SEARCH_mode(void) { //if the robot gets lost, hopefully this will make it f
 }
 //outputs an int, takes in an int, takes median of input values
 int noiseFilter(int number) //noise filter so that the robot doesn't go crazy because of noise 
-			    //although it seems to be causing the values read from the IR sensors to break, and so the robot goes haywire. 
-			    //Oh the irony
+							//although it seems to be causing the values read from the IR sensors to break, and so the robot goes haywire. 
+							//Oh the irony
 {
 
 	for (i = 0; i <= 3; i++) //prevents the buffer from overflowing
@@ -429,3 +447,5 @@ int noiseFilter(int number) //noise filter so that the robot doesn't go crazy be
 		return bufferTwo[2]; //once the sorting is done, returns the median value
 	}
 }
+Contact GitHub API Training Shop Blog About
+© 2017 GitHub, Inc.Terms Privacy Security Status Help
