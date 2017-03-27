@@ -1,21 +1,4 @@
-Skip to content
-This repository
-Search
-Pull requests
-Issues
-Gist
-@TheManWithTheGit
-Sign out
-Unwatch 2
-Star 0
-Fork 0 TheManWithTheGit / 3pi - arduino
-Code  Pull requests 0  Projects 0  Pulse  Graphs  Settings
-Branch : master Find file Copy path3pi - arduino / Master.ino
-	5097341  11 minutes ago
-	@TheManWithTheGit TheManWithTheGit Added comments, changed LINE follow code to be slower
-	2 contributors @TheManWithTheGit @abarcovschi
-	RawBlameHistory
-	432 lines(355 sloc)  13.7 KB
+
 #include <Pololu3pi.h>
 #include <PololuQTRSensors.h>
 #include <OrangutanMotors.h>
@@ -25,9 +8,9 @@ Branch : master Find file Copy path3pi - arduino / Master.ino
 #include <OrangutanPushbuttons.h>
 #include <OrangutanBuzzer.h>
 
-	void motors_init(void); //required for the code to work
+void motors_init(void); //required for the code to work
 
-							//This shortens the libraries for easier typing
+//This shortens the libraries for easier typing
 OrangutanLCD lcd;
 Pololu3pi bot;
 
@@ -447,5 +430,3 @@ int noiseFilter(int number) //noise filter so that the robot doesn't go crazy be
 		return bufferTwo[2]; //once the sorting is done, returns the median value
 	}
 }
-Contact GitHub API Training Shop Blog About
-© 2017 GitHub, Inc.Terms Privacy Security Status Help
