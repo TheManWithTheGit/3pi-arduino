@@ -170,11 +170,11 @@ void LDR_func(void) {
 
 		//reads the values from the IR sensors, and cleans the signal
 		bot.readLineSensors(sensors, IR_EMITTERS_ON);
-		sensorOne = noiseFilter(sensors[0]);
-		sensorTwo = noiseFilter(sensors[1]);
-		sensorThree = noiseFilter(sensors[2]);
-		sensorFour = noiseFilter(sensors[3]);
-		sensorFive = noiseFilter(sensors[4]);
+		sensorOne = sensors[0];
+		sensorTwo = sensors[1];
+		sensorThree = sensors[2];
+		sensorFour = sensors[3];
+		sensorFive = sensors[4];
 
 		//reads the LDR values
 		left_value = analogRead(left_ldr);
@@ -248,11 +248,11 @@ void LINE_func(void) {
 		//pos = noiseFilter(sensorWithNoise); //For some reason, the noise filter breaks the readLine values, so I've left it out
 		pos = sensorWithNoise;
 
-		sensorOne = noiseFilter(sensors[0]);
-		sensorTwo = noiseFilter(sensors[1]);
-		sensorThree = noiseFilter(sensors[2]);
-		sensorFour = noiseFilter(sensors[3]);
-		sensorFive = noiseFilter(sensors[4]);
+		sensorOne = sensors[0];
+		sensorTwo = sensors[1];
+		sensorThree = sensors[2];
+		sensorFour = sensors[3];
+		sensorFive = sensors[4];
 
 		TILTpin = analogRead(A5); //reading the tilt sensor
 		currentMillis = millis();
