@@ -352,10 +352,8 @@ void TILT_func(void) { //this doesn't work :/
 		int TILTpowerDiff = (TILTcentrePos / 2) - (deltaTILT * 3 / 2);
 		// Compute the actual motor settings. Never set either motor to a negative value
 		const int TILTmaximum = 50; //this value changes the maximum difference the motors will have between them, affects sharpness of the turn
-		if (TILTpowerDiff > maximum)
-			TILTpowerDiff = maximum;
-		else if (TILTpowerDiff < -maximum)
-			TILTpowerDiff = -maximum;
+		if (TILTpowerDiff > TILTmaximum)
+			TILTpowerDiff = TILTmaximum;
 
 		set_motors(TILTpowerDiff, TILTpowerDiff );
 		
