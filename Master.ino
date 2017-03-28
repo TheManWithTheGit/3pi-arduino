@@ -354,21 +354,24 @@ void TILT_func(void) { //this doesn't really work :/
 		//this equation will increase/decrease motor speed depending on the conditions above and constants
 		//this equation specifically makes it where it will move forward, 
 		//and if the angle begins to change, it'll move in the opposite direction to counter the movement
-		int TILTpowerDiff = (TILTcentrePos * 2) - (deltaTILT);
+		int TILTpowerDiff = (TILTcentrePos * 2) - (deltaTILT*3/2);
 		// Compute the actual motor settings. Never set either motor to a negative value
-		const int TILTmaximum = 60; //this value changes the maximum difference the motors will have between them, affects sharpness of the turn
+		const int TILTmaximum = 40; 
 
 		if (deltaTILT > 10) // I dont want it to change too quickly, otherwise it'll just get stuck in a feedback loop
 			deltaTILT = 10;
 		else if (deltaTILT < -10)
 			deltaTILT = -10;
 
-		if (TILTpowerDiff > TILTmaximum)
+		if (TILTpowerDiff > TILTmaximum) //Don't want the robot to fly off the ramp
 			TILTpowerDiff = TILTmaximum;
 
-		TILTpowerDiff = noiseFilter(TILTpowerDiff);
+		if (TILTpowerDiff < 10 && TILTpowerDiff > -10)//want it to react a bit faster a low speeds.
+			TILTpowerDiff = TILTpowerDiff * 2;
 
-		set_motors(TILTpowerDiff, TILTpowerDiff);
+		int TILTpowerDiffClean = noiseFilter(TILTpowerDiff);
+
+		set_motors(TILTpowerDiffClean, TILTpowerDiffClean);
 
 
 	}
