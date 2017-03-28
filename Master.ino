@@ -8,9 +8,9 @@
 #include <OrangutanPushbuttons.h>
 #include <OrangutanBuzzer.h>
 
-	void motors_init(void); //required for the code to work
+void motors_init(void); //required for the code to work
 
-							//This shortens the libraries for easier typing
+//This shortens the libraries for easier typing
 OrangutanLCD lcd;
 Pololu3pi bot;
 
@@ -281,16 +281,17 @@ void LINE_func(void) {
 		//fact that the robot moving makes the tilt sensor produce a value much higher than the ramp would, so it would get tripped from just moving.
 		//this means I cannot transition to the seesaw now, as I have no valid detection method.
 
-		//if (TILTpin > tiltFlat + 15) //checking if the robot is on the seesaw
-		//{
-		//	delay(300); // this is to check if the tilt sensor is actually reading this because of gravity,
-		//				//rather than the acceleration of the robot, so let it settle for a sec
-		//	if (TILTpin > tiltFlat + 15)
-		//	{
-		//		motionState = TILT_BALANCE;
-		//		return;
-		//	}
-		//}
+		/*if (TILTpin > tiltFlat + 15) //checking if the robot is on the seesaw
+		{
+			delay(300); // this is to check if the tilt sensor is actually reading this because of gravity,
+						//rather than the acceleration of the robot, so let it settle for a sec
+			if (TILTpin > tiltFlat + 15)
+			{
+				motionState = TILT_BALANCE;
+				return;
+			}
+		}
+		*/
 
 
 
@@ -313,7 +314,7 @@ void LINE_func(void) {
 			powerDiff = -maximum;
 
 		if (powerDiff < 0) //depending if the value is positive or negative, it needs to be sent to the right wheels.
-			set_motors((maximum + powerDiff) * 1, maximum * 1); //I've set this to *0.5 because if I go any faster, the tilt sensor will be triggered by the robots acceleration and activate early
+			set_motors((maximum + powerDiff) * 1, maximum * 1);
 		else
 			set_motors(maximum * 1, (maximum - powerDiff) * 1);
 
@@ -351,7 +352,8 @@ void TILT_func(void) { //this doesn't really work :/
 		TILTlastCentrePos = TILTcentrePos;
 
 		//this equation will increase/decrease motor speed depending on the conditions above and constants
-		//this equation specifically makes it where it will move forward, and if the angle begins to change, it'll move in the opposite direction to counter the movement
+		//this equation specifically makes it where it will move forward, 
+		//and if the angle begins to change, it'll move in the opposite direction to counter the movement
 		int TILTpowerDiff = (TILTcentrePos * 2) - (deltaTILT);
 		// Compute the actual motor settings. Never set either motor to a negative value
 		const int TILTmaximum = 60; //this value changes the maximum difference the motors will have between them, affects sharpness of the turn
@@ -363,6 +365,8 @@ void TILT_func(void) { //this doesn't really work :/
 
 		if (TILTpowerDiff > TILTmaximum)
 			TILTpowerDiff = TILTmaximum;
+
+		TILTpowerDiff = noiseFilter(TILTpowerDiff);
 
 		set_motors(TILTpowerDiff, TILTpowerDiff);
 
@@ -428,3 +432,4 @@ int noiseFilter(int number) //noise filter so that the robot doesn't go crazy be
 		return bufferTwo[2]; //once the sorting is done, returns the median value
 	}
 }
+
