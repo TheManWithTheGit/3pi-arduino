@@ -1,4 +1,5 @@
 
+
 #include <Pololu3pi.h>
 #include <PololuQTRSensors.h>
 #include <OrangutanMotors.h>
@@ -351,27 +352,64 @@ void TILT_func(void) { //this doesn't really work :/
 		// Remember the last pos for comparasion later
 		TILTlastCentrePos = TILTcentrePos;
 
-		//this equation will increase/decrease motor speed depending on the conditions above and constants
-		//this equation specifically makes it where it will move forward, 
-		//and if the angle begins to change, it'll move in the opposite direction to counter the movement
-		int TILTpowerDiff = (TILTcentrePos * 2) - (deltaTILT*3/2);
-		// Compute the actual motor settings. Never set either motor to a negative value
-		const int TILTmaximum = 40; 
+		////this equation will increase/decrease motor speed depending on the conditions above and constants
+		////this equation specifically makes it where it will move forward, 
+		////and if the angle begins to change, it'll move in the opposite direction to counter the movement
+		//int TILTpowerDiff = (TILTcentrePos * 2) - (deltaTILT*3/2);
 
-		if (deltaTILT > 10) // I dont want it to change too quickly, otherwise it'll just get stuck in a feedback loop
-			deltaTILT = 10;
-		else if (deltaTILT < -10)
-			deltaTILT = -10;
+		//// Compute the actual motor settings. Never set either motor to a negative value
+		//const int TILTmaximum = 40; 
 
-		if (TILTpowerDiff > TILTmaximum) //Don't want the robot to fly off the ramp
-			TILTpowerDiff = TILTmaximum;
+		//if (deltaTILT > 10) // I dont want it to change too quickly, otherwise it'll just get stuck in a feedback loop
+		//	deltaTILT = 10;   //Although it seems to be super sensitive, so feedback is always happening.
+		//else if (deltaTILT < -10)
+		//	deltaTILT = -10;
 
-		if (TILTpowerDiff < 10 && TILTpowerDiff > -10)//want it to react a bit faster a low speeds.
-			TILTpowerDiff = TILTpowerDiff * 2;
+		//if (TILTpowerDiff > TILTmaximum) //Don't want the robot to fly off the ramp
+		//	TILTpowerDiff = TILTmaximum;
 
-		int TILTpowerDiffClean = noiseFilter(TILTpowerDiff);
+		//if (TILTpowerDiff < 10 && TILTpowerDiff > -10)//want it to react a bit faster a low speeds.
+		//	TILTpowerDiff = TILTpowerDiff * 2;
 
-		set_motors(TILTpowerDiffClean, TILTpowerDiffClean);
+		//int TILTpowerDiffClean = noiseFilter(TILTpowerDiff);
+
+		//set_motors(TILTpowerDiffClean, TILTpowerDiffClean);
+
+		//trying something easier
+		//I hate if else blocks with a passion, but its a more surefire way to test/debug
+
+		if (TILTcentrePos >= 10)
+		{
+			set_motors(20, 20);
+			delay(50);
+		}
+		else if (TILTcentrePos <= -10)
+		{
+			set_motors(-20, -20);
+			delay(50);
+		}
+		else if (TILTcentrePos > 5 && TILTcentrePos < 10)
+		{
+			set_motors(15, 15);
+			delay(20);
+		}
+		else if (TILTcentrePos < -5 && TILTcentrePos > -10)
+		{
+			set_motors(-15, -15);
+			delay(20);
+		}
+		else if (TILTcentrePos < 5)
+		{
+			set_motors(10, 10);
+			delay(10);
+		}
+		else if (TILTcentrePos > -5)
+		{
+			set_motors(-10, -10);
+			delay(10);
+		}
+
+	
 
 
 	}
