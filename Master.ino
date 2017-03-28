@@ -1,5 +1,4 @@
 
-
 #include <Pololu3pi.h>
 #include <PololuQTRSensors.h>
 #include <OrangutanMotors.h>
@@ -324,7 +323,7 @@ void LINE_func(void) {
 void TILT_func(void) { //this doesn't really work :/
 	while (1) {
 		//reads the raw tilt sensor value
-		TILTpos = analogRead(pinFive);
+		TILTpos = noiseFilter(analogRead(pinFive));
 
 		TILTcentrePos = TILTpos - tiltFlat; //makes 0 the level/desired value
 		OrangutanBuzzer::playFrequency(1000, 250, 7);
@@ -380,35 +379,39 @@ void TILT_func(void) { //this doesn't really work :/
 
 		if (TILTcentrePos >= 10)
 		{
-			set_motors(20, 20);
-			delay(50);
+			set_motors(40, 40);
+			delay(200);
 		}
 		else if (TILTcentrePos <= -10)
 		{
-			set_motors(-20, -20);
-			delay(50);
+			set_motors(-40, -40);
+			delay(200);
 		}
 		else if (TILTcentrePos > 5 && TILTcentrePos < 10)
 		{
-			set_motors(15, 15);
-			delay(20);
+			set_motors(30, 30);
+			delay(50);
 		}
 		else if (TILTcentrePos < -5 && TILTcentrePos > -10)
 		{
-			set_motors(-15, -15);
-			delay(20);
+			set_motors(-30, -30);
+			delay(50);
 		}
 		else if (TILTcentrePos < 5)
 		{
-			set_motors(10, 10);
-			delay(10);
+			set_motors(15, 15);
+			delay(35);
 		}
 		else if (TILTcentrePos > -5)
 		{
-			set_motors(-10, -10);
-			delay(10);
+			set_motors(-15, -15);
+			delay(35);
 		}
-
+		else if (TILTcentrePos == 0)
+		{
+			set_motors(0, 0);
+			delay(1000);
+		}
 	
 
 
