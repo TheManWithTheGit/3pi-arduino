@@ -380,32 +380,32 @@ void TILT_func(void) { //this doesn't really work :/
 		if (TILTcentrePos >= 10)
 		{
 			set_motors(40, 40);
-			delay(200);
+			delay(250);
 		}
 		else if (TILTcentrePos <= -10)
 		{
 			set_motors(-40, -40);
-			delay(200);
+			delay(250);
 		}
 		else if (TILTcentrePos > 5 && TILTcentrePos < 10)
 		{
 			set_motors(30, 30);
-			delay(50);
+			delay(60);
 		}
 		else if (TILTcentrePos < -5 && TILTcentrePos > -10)
 		{
 			set_motors(-30, -30);
-			delay(50);
+			delay(60);
 		}
 		else if (TILTcentrePos < 5)
 		{
 			set_motors(15, 15);
-			delay(35);
+			delay(45);
 		}
 		else if (TILTcentrePos > -5)
 		{
 			set_motors(-15, -15);
-			delay(35);
+			delay(45);
 		}
 		else if (TILTcentrePos == 0)
 		{
