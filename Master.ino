@@ -1,4 +1,21 @@
-
+Skip to content
+This repository
+Search
+Pull requests
+Issues
+Gist
+@TheManWithTheGit
+Sign out
+Unwatch 2
+Star 0
+Fork 0 TheManWithTheGit / 3pi - arduino
+Code  Pull requests 0  Projects 0  Pulse  Graphs  Settings
+Branch : master Find file Copy path3pi - arduino / Master.ino
+	5097341  11 minutes ago
+	@TheManWithTheGit TheManWithTheGit Added comments, changed LINE follow code to be slower
+	2 contributors @TheManWithTheGit @abarcovschi
+	RawBlameHistory
+	432 lines(355 sloc)  13.7 KB
 #include <Pololu3pi.h>
 #include <PololuQTRSensors.h>
 #include <OrangutanMotors.h>
@@ -8,9 +25,9 @@
 #include <OrangutanPushbuttons.h>
 #include <OrangutanBuzzer.h>
 
-void motors_init(void); //required for the code to work
+	void motors_init(void); //required for the code to work
 
-//This shortens the libraries for easier typing
+							//This shortens the libraries for easier typing
 OrangutanLCD lcd;
 Pololu3pi bot;
 
@@ -275,18 +292,22 @@ void LINE_func(void) {
 		// The "centrePos" term should be 0 when we are on the line. Hence, we subtract 2000 from the sensor value
 		int centrePos = pos - 2000;
 
-		//if the robot doesn't detect the line on all sensors, do below
+		//The code below is commented because of a laste minute change that was made to the course that the robot will travel through
+		//originally there was no line on the seesaw, so I would check if there was no line detected, and then check the tilt sensor,
+		//but since there is a line now, the only way to check for the ramp is to use the tilt sensor. But this is not possible, due to the 
+		//fact that the robot moving makes the tilt sensor produce a value much higher than the ramp would, so it would get tripped from just moving.
+		//this means I cannot transition to the seesaw now, as I have no valid detection method.
 
-		if (TILTpin > tiltFlat + 15) //checking if the robot is on the seesaw
-		{
-			delay(300); // this is to check if the tilt sensor is actually reading this because of gravity,
-						//rather than the acceleration of the robot, so let it settle for a sec
-			if (TILTpin > tiltFlat + 15)
-			{
-				motionState = TILT_BALANCE;
-				return;
-			}
-		}
+		//if (TILTpin > tiltFlat + 15) //checking if the robot is on the seesaw
+		//{
+		//	delay(300); // this is to check if the tilt sensor is actually reading this because of gravity,
+		//				//rather than the acceleration of the robot, so let it settle for a sec
+		//	if (TILTpin > tiltFlat + 15)
+		//	{
+		//		motionState = TILT_BALANCE;
+		//		return;
+		//	}
+		//}
 
 
 
@@ -316,8 +337,6 @@ void LINE_func(void) {
 	}
 }
 void TILT_func(void) { //this doesn't really work :/
-	OrangutanBuzzer::playFrequency(1000, 250, 14);
-
 	while (1) {
 		//reads the raw tilt sensor value
 		TILTpos = analogRead(pinFive);
@@ -363,10 +382,6 @@ void TILT_func(void) { //this doesn't really work :/
 			TILTpowerDiff = TILTmaximum;
 
 		set_motors(TILTpowerDiff, TILTpowerDiff);
-
-
-
-
 
 
 	}
@@ -430,3 +445,5 @@ int noiseFilter(int number) //noise filter so that the robot doesn't go crazy be
 		return bufferTwo[2]; //once the sorting is done, returns the median value
 	}
 }
+Contact GitHub API Training Shop Blog About
+© 2017 GitHub, Inc.Terms Privacy Security Status Help
