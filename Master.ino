@@ -280,18 +280,25 @@ void LINE_func(void) {
 		//but since there is a line now, the only way to check for the ramp is to use the tilt sensor. But this is not possible, due to the 
 		//fact that the robot moving makes the tilt sensor produce a value much higher than the ramp would, so it would get tripped from just moving.
 		//this means I cannot transition to the seesaw now, as I have no valid detection method.
-
-		/*if (TILTpin > tiltFlat + 15) //checking if the robot is on the seesaw
+		for(x=0;x<1;x++)
 		{
-			delay(300); // this is to check if the tilt sensor is actually reading this because of gravity,
-						//rather than the acceleration of the robot, so let it settle for a sec
-			if (TILTpin > tiltFlat + 15)
+		int millisTimer=millis();
+		}
+		
+		if(millis()-millisTimer >= 7000)
+		{
+		
+			if (TILTpin > tiltFlat + 15) //checking if the robot is on the seesaw
 			{
-				motionState = TILT_BALANCE;
-				return;
+				delay(300); // this is to check if the tilt sensor is actually reading this because of gravity,
+				//rather than the acceleration of the robot, so let it settle for a sec
+				if (TILTpin > tiltFlat + 15)
+				{
+					motionState = TILT_BALANCE;
+					return;
+				}
 			}
 		}
-		*/
 
 
 
@@ -314,9 +321,9 @@ void LINE_func(void) {
 			powerDiff = -maximum;
 
 		if (powerDiff < 0) //depending if the value is positive or negative, it needs to be sent to the right wheels.
-			set_motors((maximum + powerDiff) * 1, maximum * 1);
+			set_motors((maximum + powerDiff) * 1.5, maximum * 1.5);
 		else
-			set_motors(maximum * 1, (maximum - powerDiff) * 1);
+			set_motors(maximum * 1.5, (maximum - powerDiff) * 1.5);
 
 	}
 }
@@ -377,41 +384,22 @@ void TILT_func(void) { //this doesn't really work :/
 		//trying something easier
 		//I hate if else blocks with a passion, but its a more surefire way to test/debug
 
-		if (TILTcentrePos >= 10)
+		if (TILTcentrePos >= 13)
 		{
-			set_motors(40, 40);
-			delay(250);
+			set_motors(20, 20);
 		}
-		else if (TILTcentrePos <= -10)
-		{
-			set_motors(-40, -40);
-			delay(250);
-		}
-		else if (TILTcentrePos > 5 && TILTcentrePos < 10)
-		{
-			set_motors(30, 30);
-			delay(60);
-		}
-		else if (TILTcentrePos < -5 && TILTcentrePos > -10)
-		{
-			set_motors(-30, -30);
-			delay(60);
-		}
-		else if (TILTcentrePos < 5)
+		else if (TILTcentrePos <13)
 		{
 			set_motors(15, 15);
-			delay(45);
-		}
-		else if (TILTcentrePos > -5)
-		{
-			set_motors(-15, -15);
-			delay(45);
-		}
-		else if (TILTcentrePos == 0)
-		{
+			delay(10);
+			set_motors(10, 10);
+			delay(10);
+			set_motors(5, 5);
+			delay(10);
 			set_motors(0, 0);
-			delay(1000);
+			delay(100);
 		}
+		
 	
 
 
