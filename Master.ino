@@ -44,6 +44,7 @@ int TILTcentrePos = 0;
 int TILTpos = 0;
 int x = 0;
 unsigned int sensorWithNoise = 0;
+int millisTimer = 0;
 
 //variables for the TILT_func
 int tiltFlat = 0;
@@ -282,10 +283,10 @@ void LINE_func(void) {
 		//this means I cannot transition to the seesaw now, as I have no valid detection method.
 		for(x=0;x<1;x++)
 		{
-		int millisTimer=millis();
+		millisTimer = millis();
 		}
 		
-		if(millis()-millisTimer >= 7000)
+		if((millis()-millisTimer) >= 7000)
 		{
 		
 			if (TILTpin > tiltFlat + 15) //checking if the robot is on the seesaw
