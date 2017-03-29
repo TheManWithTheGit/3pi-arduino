@@ -288,6 +288,7 @@ void LINE_func(void) {
 		
 		if((millis()-millisTimer) >= 6000) //since literally nothing other than a timer is reliable, this is what I'm using
 		{
+			OrangutanBuzzer::playFrequency(5000, 500, 14);
 			motionState = TILT_BALANCE;
 			return;
 		}
@@ -377,18 +378,26 @@ void TILT_func(void) { //this doesn't really work :/
 		if (TILTcentrePos >= 13)
 		{
 			set_motors(30, 30);
+			delay(75);
+			set_motors(0, 0);
+			delay(300);
 		}
 		else if (TILTcentrePos <13 && TILTcentrePos > -13)
 		{
 			set_motors(25, 25);
-			delay(10);
+			delay(20);
 			set_motors(20, 20);
-			delay(10);
+			delay(20);
 			set_motors(0, 0);
 			delay(5000);
 		}
 		else if (TILTcentrePos <= -13)
-			set_motors(-35, -35);
+		{
+			set_motors(-30, -30);
+			delay(75);
+			set_motors(0, 0);
+			delay(300);
+		}
 	
 
 
