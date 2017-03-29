@@ -282,7 +282,7 @@ void LINE_func(void) {
 		//fact that the robot moving makes the tilt sensor produce a value much higher than the ramp would, so it would get tripped from just moving.
 		//this means I cannot transition to the seesaw now, as I have no valid detection method.
 		
-		if(millis() >= 10000) //since literally nothing other than a timer is reliable, this is what I'm using
+		if(millis() >= 18000) //since literally nothing other than a timer is reliable, this is what I'm using
 		{
 			motionState = TILT_BALANCE;
 			return;
@@ -371,22 +371,22 @@ void TILT_func(void) { //this doesn't really work :/
 		//trying something easier
 		//I hate if else blocks with a passion, but its a more surefire way to test/debug
 
-		if (TILTcentrePos >= 13)
+		if (TILTcentrePos >= 14)
 		{
 			set_motors(35, 35);
-			delay(100);
+			delay(90);
 			set_motors(0, 0);
 			delay(600);
 		}
-		else if (TILTcentrePos <13 && TILTcentrePos > -13)
+		else if (TILTcentrePos <14 && TILTcentrePos > -14)
 		{
 			set_motors(0, 0);
 			delay(500);
 		}
-		else if (TILTcentrePos <= -13)
+		else if (TILTcentrePos <= -14)
 		{
 			set_motors(-35, -35);
-			delay(100);
+			delay(90);
 			set_motors(0, 0);
 			delay(600);
 		}
