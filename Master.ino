@@ -215,9 +215,9 @@ void LDR_func(void) {
 				return; //breaks out of the LDR_func to move to the LINE_func in the switch
 			}
 			if (left_value < right_value) //I could've done the whole differential calc stuff, but this is lighter and does the job just as well
-				set_motors(80, 130);
+				set_motors(70, 130);
 			else if (left_value > right_value)
-				set_motors(130, 80);
+				set_motors(130, 70);
 		}
 		else
 			set_motors(80, -80); //spin spin spin
@@ -286,7 +286,7 @@ void LINE_func(void) {
 		millisTimer = millis();
 		}
 		
-		if((millis()-millisTimer) >= 6000) //sicne literally nothing other than a timer is reliable, this is what I'm using
+		if((millis()-millisTimer) >= 5000) //since literally nothing other than a timer is reliable, this is what I'm using
 		{
 			motionState = TILT_BALANCE;
 			return;
@@ -376,20 +376,16 @@ void TILT_func(void) { //this doesn't really work :/
 
 		if (TILTcentrePos >= 13)
 		{
-			set_motors(35, 35);
+			set_motors(30, 30);
 		}
 		else if (TILTcentrePos <13 && TILTcentrePos > -13)
 		{
-			set_motors(30, 30);
-			delay(10);
 			set_motors(25, 25);
 			delay(10);
-			set_motors(15, 15);
+			set_motors(20, 20);
 			delay(10);
-			set_motors(10, 10);
-			delay(100);
 			set_motors(0, 0);
-			delay(500);
+			delay(5000);
 		}
 		else if (TILTcentrePos <= -13)
 			set_motors(-35, -35);
