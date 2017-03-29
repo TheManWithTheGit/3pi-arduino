@@ -286,7 +286,7 @@ void LINE_func(void) {
 		millisTimer = millis();
 		}
 		
-		if((millis()-millisTimer) >= 6000) //since literally nothing other than a timer is reliable, this is what I'm using
+		if((millis()-millisTimer) >= 1000) //since literally nothing other than a timer is reliable, this is what I'm using
 		{
 			OrangutanBuzzer::playFrequency(5000, 500, 14);
 			motionState = TILT_BALANCE;
