@@ -281,12 +281,8 @@ void LINE_func(void) {
 		//but since there is a line now, the only way to check for the ramp is to use the tilt sensor. But this is not possible, due to the 
 		//fact that the robot moving makes the tilt sensor produce a value much higher than the ramp would, so it would get tripped from just moving.
 		//this means I cannot transition to the seesaw now, as I have no valid detection method.
-		for(x=0;x<1;x++)
-		{
-		millisTimer = millis();
-		}
-		int TIME=millis();
-		if((TIME-millisTimer) >= 1000) //since literally nothing other than a timer is reliable, this is what I'm using
+		
+		if(millis() >= 1000) //since literally nothing other than a timer is reliable, this is what I'm using
 		{
 			OrangutanBuzzer::playFrequency(5000, 500, 14);
 			motionState = TILT_BALANCE;
