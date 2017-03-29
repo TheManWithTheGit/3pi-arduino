@@ -286,7 +286,7 @@ void LINE_func(void) {
 		millisTimer = millis();
 		}
 		
-		if((millis()-millisTimer) >= 7000)
+		if((millis()-millisTimer) >= 6000) //sicne literally nothing other than a timer is reliable, this is what I'm using
 		{
 			motionState = TILT_BALANCE;
 			return;
@@ -376,20 +376,23 @@ void TILT_func(void) { //this doesn't really work :/
 
 		if (TILTcentrePos >= 13)
 		{
-			set_motors(20, 20);
+			set_motors(35, 35);
 		}
-		else if (TILTcentrePos <13)
+		else if (TILTcentrePos <13 && TILTcentrePos > -13)
 		{
+			set_motors(30, 30);
+			delay(10);
+			set_motors(25, 25);
+			delay(10);
 			set_motors(15, 15);
 			delay(10);
 			set_motors(10, 10);
-			delay(10);
-			set_motors(5, 5);
-			delay(10);
-			set_motors(0, 0);
 			delay(100);
+			set_motors(0, 0);
+			delay(500);
 		}
-		
+		else if (TILTcentrePos <= -13)
+			set_motors(-35, -35)
 	
 
 
