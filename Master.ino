@@ -380,7 +380,7 @@ void TILT_func(void) { //this doesn't really work :/
 			set_motors(35, 35);
 			delay(100);
 			set_motors(0, 0);
-			delay(300);
+			delay(600);
 		}
 		else if (TILTcentrePos <13 && TILTcentrePos > -13)
 		{
@@ -392,7 +392,7 @@ void TILT_func(void) { //this doesn't really work :/
 			set_motors(-35, -35);
 			delay(100);
 			set_motors(0, 0);
-			delay(300);
+			delay(600);
 		}
 	
 
