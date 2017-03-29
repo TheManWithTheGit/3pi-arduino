@@ -282,7 +282,7 @@ void LINE_func(void) {
 		//fact that the robot moving makes the tilt sensor produce a value much higher than the ramp would, so it would get tripped from just moving.
 		//this means I cannot transition to the seesaw now, as I have no valid detection method.
 		
-		if(millis() >= 1000) //since literally nothing other than a timer is reliable, this is what I'm using
+		if(millis() >= 8000) //since literally nothing other than a timer is reliable, this is what I'm using
 		{
 			OrangutanBuzzer::playFrequency(5000, 500, 14);
 			motionState = TILT_BALANCE;
