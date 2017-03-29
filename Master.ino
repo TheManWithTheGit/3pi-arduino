@@ -286,7 +286,7 @@ void LINE_func(void) {
 		millisTimer = millis();
 		}
 		
-		if((millis()-millisTimer) >= 5000) //since literally nothing other than a timer is reliable, this is what I'm using
+		if((millis()-millisTimer) >= 6000) //since literally nothing other than a timer is reliable, this is what I'm using
 		{
 			motionState = TILT_BALANCE;
 			return;
@@ -311,9 +311,9 @@ void LINE_func(void) {
 			powerDiff = -maximum;
 
 		if (powerDiff < 0) //depending if the value is positive or negative, it needs to be sent to the right wheels.
-			set_motors((maximum + powerDiff) * 1.5, maximum * 1.5);
+			set_motors((maximum + powerDiff) * 1.2, maximum * 1.2);
 		else
-			set_motors(maximum * 1.5, (maximum - powerDiff) * 1.5);
+			set_motors(maximum * 1.2, (maximum - powerDiff) * 1.2);
 
 	}
 }
