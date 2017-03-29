@@ -288,20 +288,9 @@ void LINE_func(void) {
 		
 		if((millis()-millisTimer) >= 7000)
 		{
-		
-			if (TILTpin > tiltFlat + 15) //checking if the robot is on the seesaw
-			{
-				delay(300); // this is to check if the tilt sensor is actually reading this because of gravity,
-				//rather than the acceleration of the robot, so let it settle for a sec
-				if (TILTpin > tiltFlat + 15)
-				{
-					motionState = TILT_BALANCE;
-					return;
-				}
-			}
+			motionState = TILT_BALANCE;
+			return;
 		}
-
-
 
 
 
