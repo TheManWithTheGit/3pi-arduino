@@ -282,6 +282,27 @@ void LINE_func(void) {
 		//fact that the robot moving makes the tilt sensor produce a value much higher than the ramp would, so it would get tripped from just moving.
 		//This means I cannot transition to the seesaw cleanly now, as I have no valid detection method.
 		
+		
+		/*if ((sensorOne < 100) && (sensorTwo < 100) && (sensorThree < 100) && (sensorFour < 100) && (sensorFive < 100))
+		{
+ 			if (TILTpin > tiltFlat + 15) //checking if the robot is on the seesaw
+  			{
+ 				//this allows the robot to come to a rest, so the tilt sensor doesn't get affected by the de-acceleration
+ 				delay(100);
+ 				if (TILTpin > tiltFlat + 2 || TILTpin < tiltFlat - 2) //checking if the robot is on the seesaw
+ 				{
+ 					delay(300); // this is to check if the tilt sensor is actually reading this because of gravity,
+ 						    //rather than the acceleration of the robot, so let it settle for a sec
+ 					if (TILTpin > tiltFlat + 15) //checking if the robot is on the seesaw
+ 					{	
+  						motionState = TILT_BALANCE;
+  						return;
+					}
+				}
+  			}
+ 
+  		}*/
+		
 		if(millis() >= 18000) //since literally nothing other than a timer is reliable, this is what I'm using.
 				      //This timer runs from when the robot is turned on, so its not the most accurate, but the best we have so far
 		{
@@ -345,30 +366,31 @@ void TILT_func(void) { //this doesn't really work :/
 		// Remember the last pos for comparasion later
 		TILTlastCentrePos = TILTcentrePos;
 
-		////this equation will increase/decrease motor speed depending on the conditions above and constants
-		////this equation specifically makes it where it will move forward, 
-		////and if the angle begins to change, it'll move in the opposite direction to counter the movement
+		//this equation will increase/decrease motor speed depending on the conditions above and constants
+		//this equation specifically makes it where it will move forward, 
+		//and if the angle begins to change, it'll move in the opposite direction to counter the movement
 		
-		//int TILTpowerDiff = (TILTcentrePos * 2) - (deltaTILT*3/2);
+		/*
+		int TILTpowerDiff = (TILTcentrePos * 2) - (deltaTILT*3/2);
 
-		//// Compute the actual motor settings. Never set either motor to a negative value
-		//const int TILTmaximum = 40; 
+		// Compute the actual motor settings. Never set either motor to a negative value
+		const int TILTmaximum = 40; 
 
-		//if (deltaTILT > 10) // I dont want it to change too quickly, otherwise it'll just get stuck in a feedback loop
-		//	deltaTILT = 10;   //Although it seems to be super sensitive, so feedback is always happening.
-		//else if (deltaTILT < -10)
-		//	deltaTILT = -10;
+		if (deltaTILT > 10) // I dont want it to change too quickly, otherwise it'll just get stuck in a feedback loop
+			deltaTILT = 10;   //Although it seems to be super sensitive, so feedback is always happening.
+		else if (deltaTILT < -10)
+			deltaTILT = -10;
 
-		//if (TILTpowerDiff > TILTmaximum) //Don't want the robot to fly off the ramp
-		//	TILTpowerDiff = TILTmaximum;
+		if (TILTpowerDiff > TILTmaximum) //Don't want the robot to fly off the ramp
+			TILTpowerDiff = TILTmaximum;
 
-		//if (TILTpowerDiff < 10 && TILTpowerDiff > -10)//want it to react a bit faster a low speeds.
-		//	TILTpowerDiff = TILTpowerDiff * 2;
+		if (TILTpowerDiff < 10 && TILTpowerDiff > -10)//want it to react a bit faster a low speeds.
+			TILTpowerDiff = TILTpowerDiff * 2;
 
-		//int TILTpowerDiffClean = noiseFilter(TILTpowerDiff);
+		int TILTpowerDiffClean = noiseFilter(TILTpowerDiff);
 
-		//set_motors(TILTpowerDiffClean, TILTpowerDiffClean);
-
+		set_motors(TILTpowerDiffClean, TILTpowerDiffClean);
+		*/
 		
 		//trying something easier due to feedback loops
 		//I hate if else blocks with a passion, but its a more surefire way to test/debug
