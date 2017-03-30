@@ -276,13 +276,14 @@ void LINE_func(void) {
 		// The "centrePos" term should be 0 when we are on the line. Hence, we subtract 2000 from the sensor value
 		int centrePos = pos - 2000;
 
-		//The code below is commented because of a laste minute change that was made to the course that the robot will travel through
-		//originally there was no line on the seesaw, so I would check if there was no line detected, and then check the tilt sensor,
+		//The code below is very hacky because of a laste minute change that was made to the course that the robot will travel through.
+		//Originally there was no line on the seesaw, so I would check if there was no line detected, and then check the tilt sensor,
 		//but since there is a line now, the only way to check for the ramp is to use the tilt sensor. But this is not possible, due to the 
 		//fact that the robot moving makes the tilt sensor produce a value much higher than the ramp would, so it would get tripped from just moving.
-		//this means I cannot transition to the seesaw now, as I have no valid detection method.
+		//This means I cannot transition to the seesaw cleanly now, as I have no valid detection method.
 		
-		if(millis() >= 18000) //since literally nothing other than a timer is reliable, this is what I'm using
+		if(millis() >= 18000) //since literally nothing other than a timer is reliable, this is what I'm using.
+				      //This timer runs from when the robot is turned on, so its not the most accurate, but the best we have so far
 		{
 			motionState = TILT_BALANCE;
 			return;
@@ -314,7 +315,6 @@ void LINE_func(void) {
 	}
 }
 void TILT_func(void) { //this doesn't really work :/
-	OrangutanBuzzer::playFrequency(3000, 500, 14);
 	while (1) {
 		//reads the raw tilt sensor value
 		TILTpos = noiseFilter(analogRead(pinFive));
@@ -348,6 +348,7 @@ void TILT_func(void) { //this doesn't really work :/
 		////this equation will increase/decrease motor speed depending on the conditions above and constants
 		////this equation specifically makes it where it will move forward, 
 		////and if the angle begins to change, it'll move in the opposite direction to counter the movement
+		
 		//int TILTpowerDiff = (TILTcentrePos * 2) - (deltaTILT*3/2);
 
 		//// Compute the actual motor settings. Never set either motor to a negative value
@@ -368,17 +369,18 @@ void TILT_func(void) { //this doesn't really work :/
 
 		//set_motors(TILTpowerDiffClean, TILTpowerDiffClean);
 
-		//trying something easier
+		
+		//trying something easier due to feedback loops
 		//I hate if else blocks with a passion, but its a more surefire way to test/debug
 
-		if (TILTcentrePos >= 14)
+		if (TILTcentrePos >= 14) //this makes the robot inch forward so the ramp has time to react
 		{
 			set_motors(35, 35);
 			delay(90);
 			set_motors(0, 0);
 			delay(600);
 		}
-		else if (TILTcentrePos <14 && TILTcentrePos > -14)
+		else if (TILTcentrePos <14 && TILTcentrePos > -14) //if the ramp is lifted up at all, stop
 		{
 			set_motors(0, 0);
 			delay(500);
@@ -396,7 +398,7 @@ void TILT_func(void) { //this doesn't really work :/
 	}
 }
 void SEARCH_mode(void) { //if the robot gets lost, hopefully this will make it find the line again
-						 //This is getting cut for now, as it causes more problems than it solves.
+			 //This is getting cut for now, as it causes more problems than it solves.
 	while (1)
 	{
 		clear();
